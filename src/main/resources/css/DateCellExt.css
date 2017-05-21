@@ -1,0 +1,13 @@
+#date-cell-today {
+    -fx-background-color: darkseagreen;
+    -fx-text-fill: white;
+}
+
+#date-cell-entered {
+    -fx-background-color: darkgreen;
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-font-size: 15px;
+}

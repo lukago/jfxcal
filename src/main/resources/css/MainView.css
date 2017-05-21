@@ -1,0 +1,16 @@
+.root {
+    -fx-font-size: 30px;
+}
+
+.label {
+    -fx-font-size: 30px;
+}
+
+.menu-bar .label {
+    -fx-font-size: 15px;
+}
+
+.menu-bar {
+    -fx-font-size: 15px;
+}
+

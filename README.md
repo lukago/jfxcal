@@ -1,5 +1,5 @@
 # javafx-calendar
-Calendar app using javafx.
+Calendar app using JavaFX.
 
 
 

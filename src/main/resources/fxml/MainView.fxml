@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.BorderPane?>
 <?import java.net.URL?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.65"
-            fx:controller="pk.calendar.controllers.CallendarPaneController">
+            fx:controller="pk.calendar.controllers.CallendarController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File">
@@ -21,8 +23,14 @@
         </MenuBar>
     </top>
 
+    <center>
+
+    </center>
+
     <stylesheets>
         <URL value="@../css/MainView.css"/>
         <URL value="@../css/DateCellExt.css"/>
     </stylesheets>
 </BorderPane>
+
+

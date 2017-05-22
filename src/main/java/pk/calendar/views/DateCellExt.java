@@ -10,7 +10,7 @@ import java.time.LocalDate;
 /**
  * Created on 5/20/2017.
  */
-public class DateCellExt extends DateCell {
+class DateCellExt extends DateCell {
 
     private ContextMenu contextMenu;
     private CallendarController cc;
@@ -29,7 +29,7 @@ public class DateCellExt extends DateCell {
 
     private void initContextMenu() {
         MenuItem menu = new MenuItem("Events");
-        menu.setOnAction(e -> cc.createEventMenu(getItem()));
+        menu.setOnAction(e -> cc.createEventMenu(this));
         contextMenu = new ContextMenu(menu);
         setContextMenu(contextMenu);
     }

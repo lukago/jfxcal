@@ -8,6 +8,11 @@
     -fx-text-fill: white;
 }
 
+#date-cell-event {
+    -fx-background-color: indianred;
+    -fx-text-fill: white;
+}
+
 .menu-item .label {
     -fx-font-size: 15px;
 }

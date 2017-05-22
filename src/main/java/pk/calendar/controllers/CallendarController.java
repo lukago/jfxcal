@@ -7,9 +7,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.DateCell;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import pk.calendar.models.EventManager;
 import pk.calendar.views.DatePickerExt;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.time.LocalDate;
 public class CallendarController {
 
     @FXML
-    BorderPane root;
+    private BorderPane root;
 
     @FXML
     public void initialize() {
@@ -31,28 +32,47 @@ public class CallendarController {
         root.setCenter(popupContent);
     }
 
-    public void createEventMenu(LocalDate date) {
-        System.out.println("bb");
+    public void updateDateCell(DateCell dc, LocalDate item) {
+        dc.setId(null);
+        handleEventPresent(dc, item);
+        handleToday(dc, item);
+        handleEventsAdded(dc, item);
+    }
+
+    private void handleToday(DateCell dc, LocalDate item) {
+        if (item.isEqual(LocalDate.now())) {
+            dc.setId("date-cell-today");
+            dc.setOnMouseEntered(event -> dc.setId("date-cell-entered"));
+            dc.setOnMouseExited(event -> dc.setId("date-cell-today"));
+        }
+    }
+
+    private void handleEventPresent(DateCell dc, LocalDate item) {
+        if (EventManager.getInstance().getEventsByDate(item).size() > 0) {
+            dc.setId("date-cell-event");
+            dc.setVisible(false);
+            dc.setVisible(true);
+        }
+    }
+
+    private void handleEventsAdded(DateCell dc, LocalDate item) {
+        dc.addEventHandler(EventsChangedEvent.ADDED,
+                e -> handleEventPresent(dc, item));
+    }
+
+    public void createEventMenu(DateCell dc) {
         try {
-            BorderPane root = FXMLLoader.load(getClass().getResource("/fxml/EventView.fxml"));
-            Scene scene = new Scene(root, 500, 500);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/EventView.fxml"));
+            fxmlLoader.setControllerFactory(c -> new EventController(dc));
+            GridPane root = fxmlLoader.load();
+            Scene scene = new Scene(root, 800, 600);
             Stage stage = new Stage();
-            stage.setTitle("Events of " + date);
+            stage.setTitle("Events of " + dc.getItem());
             stage.setScene(scene);
             stage.getIcons().add(new Image("/assets/calendar-icon.png"));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void updateDateCell(DateCell dc, LocalDate item) {
-        if (item.isEqual(LocalDate.now())) {
-            dc.setId("date-cell-today");
-            dc.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> dc.setId("date-cell-entered"));
-            dc.addEventHandler(MouseEvent.MOUSE_EXITED, event -> dc.setId("date-cell-today"));
-        } else {
-            dc.setId(null);
         }
     }
 }

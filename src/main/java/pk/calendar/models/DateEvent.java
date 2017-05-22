@@ -10,8 +10,9 @@ public class DateEvent {
     private LocalDate date;
     private String description;
 
-    public DateEvent(LocalDate date) {
+    public DateEvent(LocalDate date, String description) {
         setDate(date);
+        setDescription(description);
     }
 
     public LocalDate getDate() {

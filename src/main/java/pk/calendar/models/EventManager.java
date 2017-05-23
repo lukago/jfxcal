@@ -27,6 +27,14 @@ public class EventManager {
                 .collect(Collectors.toList());
     }
 
+    public DateEvent getLastEventByDate(LocalDate date) {
+        return events.stream()
+                .filter(e -> e.getDate().isEqual(date))
+                .sorted()
+                .collect(Collectors.toList())
+                .get(events.size()-1);
+    }
+
     public void addEvent(DateEvent event) {
         events.add(event);
     }

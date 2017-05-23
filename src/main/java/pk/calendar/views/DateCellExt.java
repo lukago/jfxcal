@@ -1,8 +1,6 @@
 package pk.calendar.views;
 
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DateCell;
-import javafx.scene.control.MenuItem;
 import pk.calendar.controllers.CallendarController;
 
 import java.time.LocalDate;
@@ -12,7 +10,6 @@ import java.time.LocalDate;
  */
 class DateCellExt extends DateCell {
 
-    private ContextMenu contextMenu;
     private CallendarController cc;
 
     public DateCellExt(CallendarController cc) {
@@ -28,10 +25,7 @@ class DateCellExt extends DateCell {
     }
 
     private void initContextMenu() {
-        MenuItem menu = new MenuItem("Events");
-        menu.setOnAction(e -> cc.createEventMenu(this));
-        contextMenu = new ContextMenu(menu);
-        setContextMenu(contextMenu);
+        setOnMouseClicked(e -> cc.createEventMenu(this, e));
     }
 
     @Override

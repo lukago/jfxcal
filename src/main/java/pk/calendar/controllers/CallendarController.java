@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.DateCell;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -60,19 +61,21 @@ public class CallendarController {
                 e -> handleEventPresent(dc, item));
     }
 
-    public void createEventMenu(DateCell dc) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/EventView.fxml"));
-            fxmlLoader.setControllerFactory(c -> new EventController(dc));
-            GridPane root = fxmlLoader.load();
-            Scene scene = new Scene(root, 800, 600);
-            Stage stage = new Stage();
-            stage.setTitle("Events of " + dc.getItem());
-            stage.setScene(scene);
-            stage.getIcons().add(new Image("/assets/calendar-icon.png"));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void createEventMenu(DateCell dc, MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/EventView.fxml"));
+                fxmlLoader.setControllerFactory(c -> new EventController(dc));
+                GridPane root = fxmlLoader.load();
+                Scene scene = new Scene(root, 900, 600);
+                Stage stage = new Stage();
+                stage.setTitle("Events of " + dc.getItem());
+                stage.setScene(scene);
+                stage.getIcons().add(new Image("/assets/calendar-icon.png"));
+                stage.show();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
         }
     }
 }

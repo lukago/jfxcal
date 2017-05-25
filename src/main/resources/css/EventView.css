@@ -6,3 +6,11 @@
     -fx-font-weight: bold;
     -fx-font-size: 20px;
 }
+
+#dateColumn {
+    -fx-alignment: CENTER;
+}
+
+#placeColumn {
+    -fx-alignment: CENTER;
+}

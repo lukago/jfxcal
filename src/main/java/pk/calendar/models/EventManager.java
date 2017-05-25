@@ -1,5 +1,8 @@
 package pk.calendar.models;
 
+import pk.calendar.controllers.storage.DBDateEventDao;
+import pk.calendar.controllers.storage.DateEventDaoFactory;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +15,20 @@ public class EventManager {
 
     private final static EventManager instance = new EventManager();
     private List<DateEvent> events;
+    private  List<DateEvent> eventsAdded;
 
     private EventManager() {
-        this.events = new ArrayList<>();
+        this.events = getEventsFromDb();
+        eventsAdded = new ArrayList<>();
+    }
+
+    private List<DateEvent> getEventsFromDb() {
+        try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
+            return db.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static EventManager getInstance() {
@@ -23,20 +37,21 @@ public class EventManager {
 
     public List<DateEvent> getEventsByDate(LocalDate date) {
         return events.stream()
-                .filter(e -> e.getDate().isEqual(date))
+                .filter(e -> e.getDateTime().toLocalDate().isEqual(date))
                 .collect(Collectors.toList());
-    }
-
-    public DateEvent getLastEventByDate(LocalDate date) {
-        return events.stream()
-                .filter(e -> e.getDate().isEqual(date))
-                .sorted()
-                .collect(Collectors.toList())
-                .get(events.size()-1);
     }
 
     public void addEvent(DateEvent event) {
         events.add(event);
+        eventsAdded.add(event);
+    }
+
+    public List<DateEvent> getEvents() {
+        return events;
+    }
+
+    public List<DateEvent> getEventsAdded() {
+        return eventsAdded;
     }
 
 }

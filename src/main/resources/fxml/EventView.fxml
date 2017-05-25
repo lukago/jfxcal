@@ -36,23 +36,11 @@
             <Insets left="45.0"/>
         </GridPane.margin>
     </Label>
-    <Button mnemonicParsing="false" onAction="#addEvent" text="Add event"
-            GridPane.columnIndex="1" GridPane.rowIndex="6">
+    <TextField fx:id="placeField" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
-            <Insets left="45.0"/>
+            <Insets left="40.0" right="40.0"/>
         </GridPane.margin>
-    </Button>
-    <TableView fx:id="eventTable"
-               prefHeight="308.0" prefWidth="742.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
-        <columns>
-            <TableColumn fx:id="dateColumn" prefWidth="151.0" text="Date"/>
-            <TableColumn fx:id="placeColumn" prefWidth="160.0" text="Place"/>
-            <TableColumn fx:id="descColumn" prefWidth="514.0" text="Description"/>
-        </columns>
-        <GridPane.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-        </GridPane.margin>
-    </TableView>
+    </TextField>
     <Spinner fx:id="hourSpinner" prefHeight="31.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
         <GridPane.margin>
             <Insets left="90.0"/>
@@ -108,11 +96,26 @@
             <Insets left="20.0"/>
         </GridPane.margin>
     </Label>
-    <TextField fx:id="placeField" GridPane.columnIndex="1" GridPane.rowIndex="3">
+
+    <Button mnemonicParsing="false" onAction="#addEvent" text="Add event"
+            GridPane.columnIndex="1" GridPane.rowIndex="6">
         <GridPane.margin>
-            <Insets left="40.0" right="40.0"/>
+            <Insets left="45.0"/>
         </GridPane.margin>
-    </TextField>
+    </Button>
+
+    <TableView fx:id="eventTable"
+               prefHeight="308.0" prefWidth="742.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
+        <columns>
+            <TableColumn fx:id="dateColumn" prefWidth="151.0" text="Date"/>
+            <TableColumn fx:id="placeColumn" prefWidth="160.0" text="Place"/>
+            <TableColumn fx:id="descColumn" prefWidth="514.0" text="Description"/>
+        </columns>
+        <GridPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        </GridPane.margin>
+    </TableView>
+
     <stylesheets>
         <URL value="@../css/EventView.css"/>
     </stylesheets>

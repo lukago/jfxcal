@@ -5,12 +5,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DateCell;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import pk.calendar.controllers.storage.DBDateEventDao;
+import pk.calendar.controllers.storage.DateEventDaoFactory;
 import pk.calendar.models.EventManager;
 import pk.calendar.views.DatePickerExt;
 
@@ -40,6 +47,10 @@ public class CallendarController {
         handleEventsAdded(dc, item);
     }
 
+    public void initStageActions(Stage stage) {
+        stage.setOnCloseRequest(e -> handleSaveEventsToDB());
+    }
+
     private void handleToday(DateCell dc, LocalDate item) {
         if (item.isEqual(LocalDate.now())) {
             dc.setId("date-cell-today");
@@ -49,7 +60,7 @@ public class CallendarController {
     }
 
     private void handleEventPresent(DateCell dc, LocalDate item) {
-        if (EventManager.getInstance().getEventsByDate(item).size() > 0) {
+        if (!EventManager.getInstance().getEventsByDate(item).isEmpty()) {
             dc.setId("date-cell-event");
             dc.setVisible(false);
             dc.setVisible(true);
@@ -61,21 +72,50 @@ public class CallendarController {
                 e -> handleEventPresent(dc, item));
     }
 
-    public void createEventMenu(DateCell dc, MouseEvent e) {
+    public void handleCellEvent(DateCell dc, MouseEvent e) {
         if (e.getClickCount() == 2) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/EventView.fxml"));
-                fxmlLoader.setControllerFactory(c -> new EventController(dc));
-                GridPane root = fxmlLoader.load();
-                Scene scene = new Scene(root, 900, 600);
-                Stage stage = new Stage();
-                stage.setTitle("Events of " + dc.getItem());
-                stage.setScene(scene);
-                stage.getIcons().add(new Image("/assets/calendar-icon.png"));
-                stage.show();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
+            createEventMenu(dc);
+        }
+    }
+
+    public void handleCellEvent(DateCell dc, KeyEvent e) {
+        if (e.getCode().equals(KeyCode.ENTER)) {
+            createEventMenu(dc);
+        }
+    }
+
+    private void handleSaveEventsToDB() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Save added events to database?", ButtonType.YES, ButtonType.NO);
+        alert.setHeaderText(null);
+        alert.setTitle("Exit");
+        Label img = new Label();
+        img.getStyleClass().addAll("alert", "error", "dialog-pane");
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/assets/calendar-icon.png").toString()));
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
+                db.write(EventManager.getInstance().getEventsAdded());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    private void createEventMenu(DateCell dc) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/EventView.fxml"));
+            fxmlLoader.setControllerFactory(c -> new EventController(dc));
+            GridPane root = fxmlLoader.load();
+            Scene scene = new Scene(root, 900, 600);
+            Stage stage = new Stage();
+            stage.setTitle("Events of " + dc.getItem());
+            stage.setScene(scene);
+            stage.getIcons().add(new Image("/assets/calendar-icon.png"));
+            stage.show();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
     }
 }

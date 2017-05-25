@@ -63,6 +63,7 @@ public class EventController {
         dateLabel.textProperty().bind(eventDateStr);
 
         data = FXCollections.observableArrayList((eventManager.getEventsByDate(eventDate)));
+
         dateColumn.setCellValueFactory(o -> new SimpleStringProperty(o.getValue()
                 .getDateTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd -> HH:mm"))));
@@ -77,17 +78,27 @@ public class EventController {
         String place = placeField.getText();
         int hour = hourSpinner.getValue();
         int min = minSpinner.getValue();
-        eventManager.addEvent(new DateEvent(eventDate, hour, min, desc, place));
-        data.add(eventManager.getLastEventByDate(eventDate));
+        int id = parseNotifySpinner(notifySpinner.getValue());
 
+        DateEvent newDateEvent = new DateEvent(eventDate, hour, min, id, place, desc);
+        eventManager.addEvent(newDateEvent);
+        data.add(newDateEvent);
         placeField.clear();
         descField.clear();
-        Event e = new EventsChangedEvent(EventsChangedEvent.ADDED);
-        Event.fireEvent(dc, e);
+
+        Event.fireEvent(dc, new EventsChangedEvent(EventsChangedEvent.ADDED));
     }
 
     public void setEventDate(LocalDate eventDate) {
         this.eventDate = eventDate;
         eventDateStr.setValue(eventDate.toString());
+    }
+
+    private int parseNotifySpinner(String value) {
+        if (value.equals("10 sec")) {
+            return 1;
+        }
+
+        return 0;
     }
 }

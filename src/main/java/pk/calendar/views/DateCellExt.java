@@ -10,7 +10,7 @@ import java.time.LocalDate;
  */
 class DateCellExt extends DateCell {
 
-    private CallendarController cc;
+    private final CallendarController cc;
 
     public DateCellExt(CallendarController cc) {
         super();
@@ -21,11 +21,8 @@ class DateCellExt extends DateCell {
     private void initalize() {
         setPrefHeight(200);
         getStylesheets().add(getClass().getResource("/css/DateCellExt.css").toExternalForm());
-        initContextMenu();
-    }
-
-    private void initContextMenu() {
-        setOnMouseClicked(e -> cc.createEventMenu(this, e));
+        setOnMouseClicked(e -> cc.handleCellEvent(this, e));
+        setOnKeyPressed(e -> cc.handleCellEvent(this, e));
     }
 
     @Override

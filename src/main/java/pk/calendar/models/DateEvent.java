@@ -1,5 +1,8 @@
 package pk.calendar.models;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,26 +13,37 @@ import java.time.LocalTime;
 public class DateEvent implements Comparable<DateEvent> {
 
     private LocalDateTime dateTime;
-    private LocalDate date;
+    private LocalDateTime notifyTime;
     private String description;
     private String place;
 
-    public DateEvent(LocalDate date, int hh, int mm, String place, String description) {
+    public DateEvent(LocalDate date, int hh, int mm, int id, String place, String description) {
         String hour = (hh < 10 ? "0" : "") + hh;
         String minute = (mm < 10 ? "0" : "") + mm;
         LocalTime time = LocalTime.parse(hour + ":" + minute + ":00");
         setDateTime(LocalDateTime.of(date, time));
-        setDate(date);
+        setNotifyTime(id);
         setDescription(description);
         setPlace(place);
     }
 
-    public LocalDate getDate() {
-        return date;
+    public DateEvent(LocalDateTime dateTime, LocalDateTime notifyTime, String description, String place) {
+        this.dateTime = dateTime;
+        this.notifyTime = notifyTime;
+        this.description = description;
+        this.place = place;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public LocalDateTime getNotifyTime() {
+        return notifyTime;
+    }
+
+    public void setNotifyTime(int id) {
+        if (id == 1) {
+            notifyTime = dateTime.minusSeconds(10);
+        } else {
+            notifyTime = dateTime;
+        }
     }
 
     public LocalDateTime getDateTime() {
@@ -60,4 +74,25 @@ public class DateEvent implements Comparable<DateEvent> {
     public int compareTo(DateEvent o) {
         return dateTime.compareTo(o.getDateTime());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DateEvent dateEvent = (DateEvent) o;
+
+        return new EqualsBuilder()
+                .append(dateTime, dateEvent.dateTime)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(dateTime)
+                .toHashCode();
+    }
+
 }

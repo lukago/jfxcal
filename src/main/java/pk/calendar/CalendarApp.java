@@ -16,7 +16,8 @@ public class CalendarApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/fxml/MainView.fxml"));
         BorderPane root = loader.load();
 
         Scene scene = new Scene(root, 1000, 600);

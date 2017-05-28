@@ -20,7 +20,8 @@ class DateCellExt extends DateCell {
 
     private void initalize() {
         setPrefHeight(200);
-        getStylesheets().add(getClass().getResource("/css/DateCellExt.css").toExternalForm());
+        getStylesheets().add(getClass()
+                .getResource("/css/DateCellExt.css").toExternalForm());
         setOnMouseClicked(e -> cc.handleCellEvent(this, e));
         setOnKeyPressed(e -> cc.handleCellEvent(this, e));
     }

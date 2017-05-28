@@ -17,7 +17,8 @@ public class DateEvent implements Comparable<DateEvent> {
     private String description;
     private String place;
 
-    public DateEvent(LocalDate date, int hh, int mm, int id, String place, String description) {
+    public DateEvent(LocalDate date, int hh, int mm, int id, String place,
+                     String description) {
         String hour = (hh < 10 ? "0" : "") + hh;
         String minute = (mm < 10 ? "0" : "") + mm;
         LocalTime time = LocalTime.parse(hour + ":" + minute + ":00");
@@ -27,7 +28,8 @@ public class DateEvent implements Comparable<DateEvent> {
         setPlace(place);
     }
 
-    public DateEvent(LocalDateTime dateTime, LocalDateTime notifyTime, String description, String place) {
+    public DateEvent(LocalDateTime dateTime, LocalDateTime notifyTime,
+                     String description, String place) {
         this.dateTime = dateTime;
         this.notifyTime = notifyTime;
         this.description = description;

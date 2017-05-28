@@ -4,112 +4,113 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0"
-          xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+<GridPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity"
+          minWidth="-Infinity" prefHeight="600.0"
+          prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111"
           fx:controller="pk.calendar.controllers.EventController">
     <columnConstraints>
-        <ColumnConstraints minWidth="0.0" percentWidth="15.0" prefWidth="165.0"/>
-        <ColumnConstraints minWidth="10.0" percentWidth="85.0" prefWidth="617.0"/>
+        <ColumnConstraints minWidth="0.0" percentWidth="15.0"
+                           prefWidth="165.0"/>
+        <ColumnConstraints minWidth="10.0" percentWidth="85.0"
+                           prefWidth="617.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="35.0" percentHeight="5.0" prefHeight="58.0"/>
-        <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="20.0"/>
-        <RowConstraints maxHeight="121.0" minHeight="10.0" percentHeight="20.0" prefHeight="100.0"/>
-        <RowConstraints maxHeight="83.0" minHeight="0.0" percentHeight="10.0" prefHeight="59.0"/>
-        <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="11.0"/>
+        <RowConstraints minHeight="10.0" percentHeight="10.0"
+                        prefHeight="20.0"/>
+        <RowConstraints maxHeight="121.0" minHeight="10.0" percentHeight="20.0"
+                        prefHeight="100.0"/>
+        <RowConstraints maxHeight="83.0" minHeight="0.0" percentHeight="10.0"
+                        prefHeight="59.0"/>
+        <RowConstraints minHeight="10.0" percentHeight="10.0"
+                        prefHeight="11.0"/>
         <RowConstraints minHeight="10.0" percentHeight="1.0" prefHeight="45.0"/>
         <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="82.0"/>
-        <RowConstraints minHeight="10.0" percentHeight="40.0" prefHeight="329.0"/>
+        <RowConstraints minHeight="10.0" percentHeight="45.0"
+                        prefHeight="329.0"/>
     </rowConstraints>
-    <TextArea fx:id="descField" prefHeight="70.0" prefWidth="801.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+    <TextArea fx:id="descField" prefHeight="70.0" prefWidth="801.0"
+              GridPane.columnIndex="1" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets left="40.0" right="40.0"/>
         </GridPane.margin>
     </TextArea>
-    <Label prefHeight="21.0" prefWidth="178.0" text="Event decription:" GridPane.rowIndex="2">
+    <Label prefHeight="21.0" prefWidth="178.0" text="Event decription:"
+           GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets bottom="90.0" left="20.0"/>
         </GridPane.margin>
     </Label>
-    <Label fx:id="dateLabel" text="yyyy-mm-dd" GridPane.columnIndex="1" GridPane.rowIndex="1">
+    <Label fx:id="dateLabel" text="yyyy-mm-dd" GridPane.columnIndex="1">
         <GridPane.margin>
             <Insets left="45.0"/>
         </GridPane.margin>
     </Label>
-    <TextField fx:id="placeField" GridPane.columnIndex="1" GridPane.rowIndex="3">
+    <TextField fx:id="placeField" GridPane.columnIndex="1"
+               GridPane.rowIndex="2">
         <GridPane.margin>
             <Insets left="40.0" right="40.0"/>
         </GridPane.margin>
     </TextField>
-    <Spinner fx:id="hourSpinner" prefHeight="31.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Spinner fx:id="hourSpinner" prefHeight="31.0" prefWidth="90.0"
+             GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="90.0"/>
         </GridPane.margin>
     </Spinner>
-    <Label text="Time:" GridPane.rowIndex="4">
+    <Label text="Time:" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="20.0"/>
         </GridPane.margin>
     </Label>
-    <Label text="Hour:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Label text="Hour:" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="45.0"/>
         </GridPane.margin>
     </Label>
-    <Label text="Min:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Label text="Min:" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="190.0"/>
         </GridPane.margin>
     </Label>
-    <Spinner fx:id="minSpinner" prefHeight="31.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Spinner fx:id="minSpinner" prefHeight="31.0" prefWidth="90.0"
+             GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="230.0"/>
         </GridPane.margin>
     </Spinner>
-    <Spinner fx:id="notifySpinner" prefHeight="31.0" prefWidth="135.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Spinner fx:id="notifySpinner" prefHeight="31.0" prefWidth="135.0"
+             GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="590.0"/>
         </GridPane.margin>
     </Spinner>
-    <Label text="Notification: " GridPane.columnIndex="1" GridPane.rowIndex="4">
+    <Label text="Notification: " GridPane.columnIndex="1" GridPane.rowIndex="3">
         <GridPane.margin>
             <Insets left="500.0"/>
         </GridPane.margin>
     </Label>
-    <MenuBar prefHeight="600.0" prefWidth="900.0" GridPane.columnSpan="2" GridPane.valignment="TOP">
-        <menus>
-            <Menu mnemonicParsing="false" text="File">
-                <items>
-                    <MenuItem mnemonicParsing="false" text="Close"/>
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <items>
-                    <MenuItem mnemonicParsing="false" text="Delete"/>
-                </items>
-            </Menu>
-        </menus>
-    </MenuBar>
-    <Label GridPane.rowIndex="3"/>
-    <Label text="Place:" GridPane.rowIndex="3">
+    <Label GridPane.rowIndex="2"/>
+    <Label text="Place:" GridPane.rowIndex="2">
         <GridPane.margin>
             <Insets left="20.0"/>
         </GridPane.margin>
     </Label>
 
     <Button mnemonicParsing="false" onAction="#addEvent" text="Add event"
-            GridPane.columnIndex="1" GridPane.rowIndex="6">
+            GridPane.columnIndex="1"
+            GridPane.rowIndex="5">
         <GridPane.margin>
             <Insets left="45.0"/>
         </GridPane.margin>
     </Button>
 
-    <TableView fx:id="eventTable"
-               prefHeight="308.0" prefWidth="742.0" GridPane.columnSpan="2" GridPane.rowIndex="7">
+    <TableView fx:id="eventTable" prefHeight="308.0" prefWidth="742.0"
+               GridPane.columnSpan="2" GridPane.rowIndex="6">
         <columns>
             <TableColumn fx:id="dateColumn" prefWidth="151.0" text="Date"/>
             <TableColumn fx:id="placeColumn" prefWidth="160.0" text="Place"/>
-            <TableColumn fx:id="descColumn" prefWidth="514.0" text="Description"/>
+            <TableColumn fx:id="descColumn" prefWidth="514.0"
+                         text="Description"/>
         </columns>
         <GridPane.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>

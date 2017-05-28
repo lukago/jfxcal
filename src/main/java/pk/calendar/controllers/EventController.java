@@ -7,8 +7,11 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import pk.calendar.models.DateEvent;
 import pk.calendar.models.EventManager;
+import pk.calendar.models.EventsChangedEvent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -54,22 +57,44 @@ public class EventController {
 
     @FXML
     public void initialize() {
-        ObservableList<String> notify = FXCollections.observableArrayList("Never", "10 sec");
-        notifySpinner.setValueFactory(new SpinnerValueFactory.ListSpinnerValueFactory<>(notify));
-        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
-        minSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 55, 0, 5));
+        ObservableList<String> notify =
+                FXCollections.observableArrayList("Never", "10 sec");
+        notifySpinner.setValueFactory(
+                new SpinnerValueFactory.ListSpinnerValueFactory<>(notify));
+        hourSpinner.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
+        minSpinner.setValueFactory(
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 55, 0, 5));
 
         descField.setWrapText(true);
         dateLabel.textProperty().bind(eventDateStr);
 
-        data = FXCollections.observableArrayList((eventManager.getEventsByDate(eventDate)));
+        data = FXCollections.observableArrayList(
+                eventManager.getEventsByDate(eventDate));
 
-        dateColumn.setCellValueFactory(o -> new SimpleStringProperty(o.getValue()
-                .getDateTime()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd -> HH:mm"))));
-        descColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        placeColumn.setCellValueFactory(new PropertyValueFactory<>("place"));
+        dateColumn.setCellValueFactory(o -> new SimpleStringProperty(
+                o.getValue().getDateTime().format(DateTimeFormatter
+                        .ofPattern("HH:mm"))));
+        descColumn.setCellValueFactory(
+                new PropertyValueFactory<>("description"));
+        placeColumn.setCellValueFactory(
+                new PropertyValueFactory<>("place"));
+
         eventTable.setItems(data);
+        eventTable.setOnKeyPressed(e -> handleDelete(e));
+    }
+
+    private void handleDelete(KeyEvent e) {
+
+        if (e.getCode().equals(KeyCode.DELETE)) {
+            if (eventTable.getSelectionModel() != null) {
+                DateEvent de = eventTable.getSelectionModel().getSelectedItem();
+                data.remove(de);
+                eventManager.deleteEvents(de);
+                Event.fireEvent(dc,
+                        new EventsChangedEvent(EventsChangedEvent.DELETED));
+            }
+        }
     }
 
     @FXML
@@ -80,7 +105,8 @@ public class EventController {
         int min = minSpinner.getValue();
         int id = parseNotifySpinner(notifySpinner.getValue());
 
-        DateEvent newDateEvent = new DateEvent(eventDate, hour, min, id, place, desc);
+        DateEvent newDateEvent =
+                new DateEvent(eventDate, hour, min, id, place, desc);
         eventManager.addEvent(newDateEvent);
         data.add(newDateEvent);
         placeField.clear();

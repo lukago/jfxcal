@@ -3,9 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import java.net.URL?>
-<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.65"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity"
+            maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/8.0.111"
             fx:controller="pk.calendar.controllers.CallendarController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
@@ -14,7 +16,9 @@
                 <MenuItem mnemonicParsing="false" text="Todo"/>
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
-                <MenuItem mnemonicParsing="false" text="Delete"/>
+                <MenuItem fx:id="eventFilterMenu" mnemonicParsing="false"
+                          onAction="#createEventFilter"
+                          text="Event filter"/>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
                 <MenuItem mnemonicParsing="false" text="About"/>
@@ -31,5 +35,3 @@
         <URL value="@../css/DateCellExt.css"/>
     </stylesheets>
 </BorderPane>
-
-

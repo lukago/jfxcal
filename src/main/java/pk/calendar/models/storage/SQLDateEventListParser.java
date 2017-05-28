@@ -1,4 +1,4 @@
-package pk.calendar.controllers.storage;
+package pk.calendar.models.storage;
 
 import pk.calendar.models.DateEvent;
 
@@ -29,6 +29,23 @@ class SQLDateEventListParser implements SQLParser<List<DateEvent>> {
             query += "('" + tsDateTime + "', '" + tsNotify + "', '"
                     + e.getDescription() + "', '" + e.getPlace() + "')";
 
+        }
+        return query;
+    }
+
+    @Override
+    public String createDeleteQuery(List<DateEvent> in) {
+        String query = "";
+        Timestamp tsDateTime;
+        Timestamp tsNotify;
+
+        for (DateEvent e : in) {
+            query += "\nDELETE FROM " + eventTable + " WHERE ";
+            tsDateTime = Timestamp.valueOf(e.getDateTime());
+            tsNotify = Timestamp.valueOf(e.getNotifyTime());
+            query += "date_time = '" + tsDateTime + "' AND notify_time = '"
+                    + tsNotify + "' AND description = '" + e.getDescription()
+                    + "' AND place = '" + e.getPlace() + "'";
         }
         return query;
     }

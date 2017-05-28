@@ -1,5 +1,10 @@
 #date-cell-today {
-    -fx-background-color: darkseagreen;
+    -fx-font-weight: 900;
+}
+
+#date-cell-today-event {
+    -fx-font-weight: 900;
+    -fx-background-color: indianred;
     -fx-text-fill: white;
 }
 
@@ -11,6 +16,10 @@
 #date-cell-event {
     -fx-background-color: indianred;
     -fx-text-fill: white;
+}
+
+#date-cell-default {
+
 }
 
 .menu-item .label {

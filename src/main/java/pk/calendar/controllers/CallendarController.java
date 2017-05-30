@@ -46,6 +46,8 @@ public class CallendarController {
     public void updateDateCell(DateCell dc, LocalDate item) {
         dc.setId(null);
         handleToday(dc, item);
+        handleEventPresent(dc, item);
+        handleEventNoPresent(dc, item);
         handleEventsAdded(dc, item);
     }
 

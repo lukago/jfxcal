@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.8.0_131" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="pk.calendar.models.DateEvent"/>
+  </void>
+  <void method="add">
+   <object class="pk.calendar.models.DateEvent"/>
+  </void>
+  <void method="add">
+   <object class="pk.calendar.models.DateEvent">
+    <void property="description">
+     <string>fg</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="pk.calendar.models.DateEvent">
+    <void property="description">
+     <string>fg</string>
+    </void>
+    <void property="place">
+     <string>fg</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="pk.calendar.models.DateEvent">
+    <void property="description">
+     <string>event</string>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

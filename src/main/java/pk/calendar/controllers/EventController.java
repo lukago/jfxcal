@@ -103,10 +103,9 @@ public class EventController {
         String place = placeField.getText();
         int hour = hourSpinner.getValue();
         int min = minSpinner.getValue();
-        int id = parseNotifySpinner(notifySpinner.getValue());
-
+        int secMinus = parseNotifySpinner(notifySpinner.getValue());
         DateEvent newDateEvent =
-                new DateEvent(eventDate, hour, min, id, place, desc);
+                new DateEvent(eventDate, hour, min, secMinus, place, desc);
         eventManager.addEvent(newDateEvent);
         data.add(newDateEvent);
         placeField.clear();
@@ -122,9 +121,8 @@ public class EventController {
 
     private int parseNotifySpinner(String value) {
         if (value.equals("10 sec")) {
-            return 1;
+            return 10;
         }
-
         return 0;
     }
 }

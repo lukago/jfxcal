@@ -11,16 +11,16 @@
             fx:controller="pk.calendar.controllers.CallendarController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
-            <Menu mnemonicParsing="false" text="File">
+            <Menu mnemonicParsing="true" text="File">
                 <MenuItem mnemonicParsing="false" text="Close"/>
                 <MenuItem mnemonicParsing="false" text="Todo"/>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
+            <Menu mnemonicParsing="true" text="_Edit">
                 <MenuItem fx:id="eventFilterMenu" mnemonicParsing="false"
                           onAction="#createEventFilter"
                           text="Event filter"/>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu mnemonicParsing="false" text="_Help">
                 <MenuItem mnemonicParsing="false" text="About"/>
             </Menu>
         </MenuBar>

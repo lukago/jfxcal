@@ -3,6 +3,7 @@ package pk.calendar.models;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,20 +11,20 @@ import java.time.LocalTime;
 /**
  * Created on 5/21/2017.
  */
-public class DateEvent implements Comparable<DateEvent> {
+public class DateEvent implements Comparable<DateEvent>, Serializable {
 
     private LocalDateTime dateTime;
     private LocalDateTime notifyTime;
     private String description;
     private String place;
 
-    public DateEvent(LocalDate date, int hh, int mm, int id, String place,
+    public DateEvent(LocalDate date, int hh, int mm, int secMinus, String place,
                      String description) {
         String hour = (hh < 10 ? "0" : "") + hh;
         String minute = (mm < 10 ? "0" : "") + mm;
         LocalTime time = LocalTime.parse(hour + ":" + minute + ":00");
         setDateTime(LocalDateTime.of(date, time));
-        setNotifyTime(id);
+        setNotifyTime(secMinus);
         setDescription(description);
         setPlace(place);
     }
@@ -36,16 +37,20 @@ public class DateEvent implements Comparable<DateEvent> {
         this.place = place;
     }
 
+    /**
+     * Depraceted ctor. For XMLEncoder serialization only.
+     */
+    @Deprecated
+    public DateEvent() {
+        this(LocalDate.now(), 1, 1, 1, "", "");
+    }
+
     public LocalDateTime getNotifyTime() {
         return notifyTime;
     }
 
-    public void setNotifyTime(int id) {
-        if (id == 1) {
-            notifyTime = dateTime.minusSeconds(10);
-        } else {
-            notifyTime = dateTime;
-        }
+    public void setNotifyTime(int seconds) {
+        notifyTime = dateTime.minusSeconds(seconds);
     }
 
     public LocalDateTime getDateTime() {
@@ -87,6 +92,8 @@ public class DateEvent implements Comparable<DateEvent> {
 
         return new EqualsBuilder()
                 .append(dateTime, dateEvent.dateTime)
+                .append(description, dateEvent.description)
+                .append(place, dateEvent.place)
                 .isEquals();
     }
 
@@ -94,7 +101,8 @@ public class DateEvent implements Comparable<DateEvent> {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(dateTime)
+                .append(description)
+                .append(place)
                 .toHashCode();
     }
-
 }

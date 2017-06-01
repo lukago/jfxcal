@@ -3,22 +3,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import java.net.URL?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity"
-            maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="900.0"
-            xmlns="http://javafx.com/javafx/8.0.111"
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
+            prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.111"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pk.calendar.controllers.CallendarController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="true" text="File">
-                <MenuItem mnemonicParsing="false" text="Close"/>
+                <MenuItem mnemonicParsing="false"
+                          onAction="#loadFromXML" text="Import XML events"/>
                 <MenuItem mnemonicParsing="false" text="Todo"/>
             </Menu>
             <Menu mnemonicParsing="true" text="_Edit">
                 <MenuItem fx:id="eventFilterMenu" mnemonicParsing="false"
-                          onAction="#createEventFilter"
-                          text="Event filter"/>
+                          onAction="#createEventFilter" text="Event filter"/>
             </Menu>
             <Menu mnemonicParsing="false" text="_Help">
                 <MenuItem mnemonicParsing="false" text="About"/>

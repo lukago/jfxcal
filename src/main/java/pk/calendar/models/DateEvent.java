@@ -2,8 +2,11 @@ package pk.calendar.models;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import pk.calendar.models.adapters.LocalDateTimeAdapter;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,12 +14,18 @@ import java.time.LocalTime;
 /**
  * Created on 5/21/2017.
  */
-public class DateEvent implements Comparable<DateEvent>, Serializable {
 
-    private LocalDateTime dateTime;
-    private LocalDateTime notifyTime;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+public class DateEvent implements Comparable<DateEvent> {
+
     private String description;
     private String place;
+
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime dateTime;
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+    private LocalDateTime notifyTime;
 
     public DateEvent(LocalDate date, int hh, int mm, int secMinus, String place,
                      String description) {
@@ -37,10 +46,6 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
         this.place = place;
     }
 
-    /**
-     * Depraceted ctor. For XMLEncoder serialization only.
-     */
-    @Deprecated
     public DateEvent() {
         this(LocalDate.now(), 1, 1, 1, "", "");
     }
@@ -92,6 +97,7 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
 
         return new EqualsBuilder()
                 .append(dateTime, dateEvent.dateTime)
+                .append(notifyTime, dateEvent.notifyTime)
                 .append(description, dateEvent.description)
                 .append(place, dateEvent.place)
                 .isEquals();
@@ -101,6 +107,7 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
                 .append(dateTime)
+                .append(notifyTime)
                 .append(description)
                 .append(place)
                 .toHashCode();

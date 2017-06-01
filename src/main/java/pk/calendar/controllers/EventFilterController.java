@@ -15,13 +15,14 @@ import javafx.scene.input.KeyEvent;
 import pk.calendar.models.DateEvent;
 import pk.calendar.models.EventManager;
 import pk.calendar.models.EventsChangedEvent;
+import pk.calendar.models.storage.DateEventDaoFactory;
 import pk.calendar.models.storage.XMLDateEventDao;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 5/27/2017.
@@ -92,24 +93,20 @@ public class EventFilterController {
 
     @FXML
     public void deleteEvents() {
-        eventManager.deleteEvents(data);
+        eventManager.deleteEvents(new HashSet<>(data));
         data.clear();
         List<DateCell> cells = cc.getDateCells();
         for (DateCell c : cells) {
-            Event.fireEvent(c,
-                    new EventsChangedEvent(EventsChangedEvent.DELETED));
+            Event.fireEvent(c, new EventsChangedEvent(EventsChangedEvent.DELETED));
         }
     }
 
     @FXML
     public void saveToXML() {
         String path = "src/main/resources/data/cal.xml";
-        try (XMLDateEventDao xmldao = new XMLDateEventDao(path, path)) {
-            List<DateEvent> dataToSave = new ArrayList<>();
-            dataToSave.addAll(data);
-            xmldao.write(dataToSave);
-        } catch (IOException e) {
-            e.printStackTrace();
+        try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
+            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+            xml.write(set);
         }
     }
 

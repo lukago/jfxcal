@@ -12,16 +12,21 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pk.calendar.models.DateEvent;
 import pk.calendar.models.EventManager;
 import pk.calendar.models.EventsChangedEvent;
 import pk.calendar.models.storage.DBDateEventDao;
 import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.storage.XMLDateEventDao;
 import pk.calendar.views.DatePickerExt;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +39,11 @@ public class CallendarController {
 
     private DatePicker dp;
     private DatePickerSkin dps;
+    private EventManager eventManager;
+
+    public CallendarController() {
+        eventManager = EventManager.getInstance();
+    }
 
     @FXML
     public void initialize() {
@@ -57,7 +67,7 @@ public class CallendarController {
 
     private void handleToday(DateCell dc, LocalDate item) {
         if (item.isEqual(LocalDate.now())) {
-            if (!EventManager.getInstance().getEventsByDate(item).isEmpty()) {
+            if (!eventManager.getEventsByDate(item).isEmpty()) {
                 dc.setId("date-cell-today-event");
             } else {
                 dc.setId("date-cell-today");
@@ -66,13 +76,13 @@ public class CallendarController {
     }
 
     private void handleEventPresent(DateCell dc, LocalDate item) {
-        if (!EventManager.getInstance().getEventsByDate(item).isEmpty()) {
+        if (!eventManager.getEventsByDate(item).isEmpty()) {
             dc.setId("date-cell-event");
         }
     }
 
     private void handleEventNoPresent(DateCell dc, LocalDate item) {
-        if (EventManager.getInstance().getEventsByDate(item).isEmpty()) {
+        if (eventManager.getEventsByDate(item).isEmpty()) {
             if (item.isEqual(LocalDate.now())) {
                 dc.setId("date-cell-today");
             } else {
@@ -104,12 +114,33 @@ public class CallendarController {
         Alert alert = createAlert("Save changes to database?");
         if (alert.getResult() == ButtonType.YES) {
             try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
-                db.delete(EventManager.getInstance().getEventsDeleted());
-                db.write(EventManager.getInstance().getEventsAdded());
+                db.delete(eventManager.getEventsDeleted());
+                db.write(eventManager.getEventsAdded());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @FXML
+    void loadFromXML() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extensionFilter =
+                new FileChooser.ExtensionFilter("xml files", "*.xml");
+        fileChooser.setInitialDirectory(new File("src/main/resources/data/"));
+        fileChooser.setSelectedExtensionFilter(extensionFilter);
+        File file = fileChooser.showOpenDialog(new Stage());
+
+
+        if (file != null) {
+            String path = "src/main/resources/data/cal.xml";
+            System.out.println(path);
+            try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
+                Set<DateEvent> xmlnew = xml.read();
+                eventManager.getEvents().addAll(xmlnew);
+            }
+        }
+
     }
 
     private Alert createAlert(String msg) {

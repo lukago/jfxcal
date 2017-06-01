@@ -3,12 +3,12 @@ package pk.calendar.models.storage;
 import pk.calendar.models.DateEvent;
 
 import java.sql.Timestamp;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 5/25/2017.
  */
-class SQLDateEventListParser implements SQLParser<List<DateEvent>> {
+class SQLDateEventListParser implements SQLParser<Set<DateEvent>> {
 
     private String eventTable;
 
@@ -17,7 +17,7 @@ class SQLDateEventListParser implements SQLParser<List<DateEvent>> {
     }
 
     @Override
-    public String createInsertQuery(List<DateEvent> in) {
+    public String createInsertQuery(Set<DateEvent> in) {
         String query = "";
         Timestamp tsDateTime;
         Timestamp tsNotify;
@@ -34,7 +34,7 @@ class SQLDateEventListParser implements SQLParser<List<DateEvent>> {
     }
 
     @Override
-    public String createDeleteQuery(List<DateEvent> in) {
+    public String createDeleteQuery(Set<DateEvent> in) {
         String query = "";
         Timestamp tsDateTime;
         Timestamp tsNotify;

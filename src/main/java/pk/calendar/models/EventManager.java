@@ -4,8 +4,8 @@ import pk.calendar.models.storage.DBDateEventDao;
 import pk.calendar.models.storage.DateEventDaoFactory;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -13,22 +13,25 @@ import java.util.stream.Collectors;
  */
 public class EventManager {
 
+    private Set<DateEvent> events;
+
     private final static EventManager instance = new EventManager();
-    private List<DateEvent> events;
-    private List<DateEvent> eventsAdded;
-    private List<DateEvent> eventsDeleted;
+
+
+    private Set<DateEvent> eventsAdded;
+    private Set<DateEvent> eventsDeleted;
 
     private EventManager() {
         this.events = getEventsFromDb();
-        eventsAdded = new ArrayList<>();
-        eventsDeleted = new ArrayList<>();
+        eventsAdded = new HashSet<>();
+        eventsDeleted = new HashSet<>();
     }
 
     public static EventManager getInstance() {
         return instance;
     }
 
-    private List<DateEvent> getEventsFromDb() {
+    private Set<DateEvent> getEventsFromDb() {
         try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
             return db.read();
         } catch (Exception e) {
@@ -37,22 +40,22 @@ public class EventManager {
         return null;
     }
 
-    public List<DateEvent> getEventsByDate(LocalDate date) {
+    public Set<DateEvent> getEventsByDate(LocalDate date) {
         return events.stream()
                 .filter(e -> e.getDateTime().toLocalDate().isEqual(date))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<DateEvent> getEventsBetween(LocalDate start, LocalDate end) {
+    public Set<DateEvent> getEventsBetween(LocalDate start, LocalDate end) {
         return events.stream()
                 .filter(e -> e.getDateTime().toLocalDate()
                         .isAfter(start.minusDays(1))
                         && e.getDateTime().toLocalDate()
                         .isBefore(end.plusDays(1)))
-                .collect(Collectors.toList());
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
-    public void deleteEvents(List<DateEvent> eventsToDelete) {
+    public void deleteEvents(Set<DateEvent> eventsToDelete) {
         for (DateEvent eDel : eventsToDelete) {
             events.remove(eDel);
             eventsDeleted.add(eDel);
@@ -71,15 +74,15 @@ public class EventManager {
         eventsAdded.add(event);
     }
 
-    public List<DateEvent> getEvents() {
+    public Set<DateEvent> getEvents() {
         return events;
     }
 
-    public List<DateEvent> getEventsAdded() {
+    public Set<DateEvent> getEventsAdded() {
         return eventsAdded;
     }
 
-    public List<DateEvent> getEventsDeleted() {
+    public Set<DateEvent> getEventsDeleted() {
         return eventsDeleted;
     }
 

@@ -4,13 +4,13 @@ import pk.calendar.models.DateEvent;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created on 5/25/2017.
  */
-public class DBDateEventDao implements Dao<List<DateEvent>>, AutoCloseable {
+public class DBDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private final String dbdriver =
             "com.microsoft.sqlserver.jdbc.SQLServerDriver";
@@ -33,9 +33,9 @@ public class DBDateEventDao implements Dao<List<DateEvent>>, AutoCloseable {
     }
 
     @Override
-    public List<DateEvent> read() {
+    public Set<DateEvent> read() {
         String query = parser.createSelectAllQuery();
-        List<DateEvent> events = new ArrayList<>();
+        Set<DateEvent> events = new HashSet<>();
         try {
             ResultSet result = statement.executeQuery(query);
             LocalDateTime ldt, notify;
@@ -55,7 +55,7 @@ public class DBDateEventDao implements Dao<List<DateEvent>>, AutoCloseable {
     }
 
     @Override
-    public void write(List<DateEvent> in) {
+    public void write(Set<DateEvent> in) {
         try {
             String query = parser.createInsertQuery(in);
             statement.executeUpdate(query);
@@ -64,7 +64,7 @@ public class DBDateEventDao implements Dao<List<DateEvent>>, AutoCloseable {
         }
     }
 
-    public void delete(List<DateEvent> in) {
+    public void delete(Set<DateEvent> in) {
         try {
             String query = parser.createDeleteQuery(in);
             statement.executeUpdate(query);

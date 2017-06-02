@@ -9,9 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import pk.calendar.models.DateEvent;
-import pk.calendar.models.EventManager;
-import pk.calendar.models.EventsChangedEvent;
+import pk.calendar.models.data.DateEvent;
+import pk.calendar.models.data.EventManager;
+import pk.calendar.models.utils.EventsChangedEvent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

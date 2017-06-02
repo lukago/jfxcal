@@ -1,4 +1,4 @@
-package pk.calendar.models;
+package pk.calendar.models.data;
 
 import pk.calendar.models.storage.DBDateEventDao;
 import pk.calendar.models.storage.DateEventDaoFactory;
@@ -72,6 +72,13 @@ public class EventManager {
     public void addEvent(DateEvent event) {
         events.add(event);
         eventsAdded.add(event);
+    }
+
+    public void addAllEvents(Set<DateEvent> eventsToAdd) {
+        for (DateEvent e : eventsToAdd) {
+            events.add(e);
+            eventsAdded.add(e);
+        }
     }
 
     public Set<DateEvent> getEvents() {

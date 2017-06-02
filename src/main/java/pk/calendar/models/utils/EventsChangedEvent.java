@@ -1,4 +1,4 @@
-package pk.calendar.models;
+package pk.calendar.models.utils;
 
 
 import javafx.event.Event;

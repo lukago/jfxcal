@@ -1,6 +1,6 @@
 package pk.calendar.models.storage;
 
-import pk.calendar.models.DateEvent;
+import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.adapters.SetWrapper;
 
 import javax.xml.bind.JAXBContext;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created on 5/30/2017.
  */
-public class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
+public class XMLDateEventDao implements Dao<Set<DateEvent>> {
 
     private String filename;
 
@@ -53,10 +53,5 @@ public class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void close() {
-
     }
 }

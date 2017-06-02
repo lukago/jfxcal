@@ -1,6 +1,6 @@
 package pk.calendar.models.storage;
 
-import pk.calendar.models.DateEvent;
+import pk.calendar.models.data.DateEvent;
 
 import java.sql.Timestamp;
 import java.util.Set;

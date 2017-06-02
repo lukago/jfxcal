@@ -5,21 +5,25 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pk.calendar.models.DateEvent;
-import pk.calendar.models.EventManager;
-import pk.calendar.models.EventsChangedEvent;
+import pk.calendar.models.data.DateEvent;
+import pk.calendar.models.data.EventManager;
 import pk.calendar.models.storage.DBDateEventDao;
 import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.storage.ICSDateEventDao;
 import pk.calendar.models.storage.XMLDateEventDao;
+import pk.calendar.models.utils.EventsChangedEvent;
+import pk.calendar.models.utils.WindowUtils;
 import pk.calendar.views.DatePickerExt;
 
 import java.io.File;
@@ -111,7 +115,7 @@ public class CallendarController {
     }
 
     private void handleSaveEventsToDB() {
-        Alert alert = createAlert("Save changes to database?");
+        Alert alert = WindowUtils.createAlert("Save changes to database?");
         if (alert.getResult() == ButtonType.YES) {
             try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
                 db.delete(eventManager.getEventsDeleted());
@@ -124,37 +128,34 @@ public class CallendarController {
 
     @FXML
     void loadFromXML() {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extensionFilter =
-                new FileChooser.ExtensionFilter("xml files", "*.xml");
-        fileChooser.setInitialDirectory(new File("src/main/resources/data/"));
-        fileChooser.setSelectedExtensionFilter(extensionFilter);
-        File file = fileChooser.showOpenDialog(new Stage());
-
+        File file = WindowUtils.createPathPicker();
 
         if (file != null) {
-            String path = "src/main/resources/data/cal.xml";
-            System.out.println(path);
-            try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
-                Set<DateEvent> xmlnew = xml.read();
-                eventManager.getEvents().addAll(xmlnew);
-            }
-        }
+            String path = file.getPath();
+            XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path);
+            EventsChangedEvent event =
+                    new EventsChangedEvent(EventsChangedEvent.ADDED);
+            Set<DateEvent> xmlnew = xml.read();
 
+            eventManager.addAllEvents(xmlnew);
+            getDateCells().forEach(o -> o.fireEvent(event));
+        }
     }
 
-    private Alert createAlert(String msg) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                msg, ButtonType.YES, ButtonType.NO);
-        alert.setHeaderText(null);
-        alert.setTitle("Exit");
-        Label img = new Label();
-        img.getStyleClass().addAll("alert", "error", "dialog-pane");
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(this.getClass()
-                .getResource("/assets/calendar-icon.png").toString()));
-        alert.showAndWait();
-        return alert;
+    @FXML
+    void loadFromICS() {
+        File file = WindowUtils.createPathPicker();
+
+        if (file != null) {
+            String path = file.getPath();
+            ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path);
+            EventsChangedEvent event =
+                    new EventsChangedEvent(EventsChangedEvent.ADDED);
+            Set<DateEvent> icsnew = ics.read();
+
+            eventManager.addAllEvents(icsnew);
+            getDateCells().forEach(o -> o.fireEvent(event));
+        }
     }
 
     private void createEventMenu(DateCell dc) {

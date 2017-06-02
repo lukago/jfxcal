@@ -12,12 +12,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import pk.calendar.models.DateEvent;
-import pk.calendar.models.EventManager;
-import pk.calendar.models.EventsChangedEvent;
+import pk.calendar.models.data.DateEvent;
+import pk.calendar.models.data.EventManager;
+import pk.calendar.models.utils.EventsChangedEvent;
 import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.storage.ICSDateEventDao;
 import pk.calendar.models.storage.XMLDateEventDao;
+import pk.calendar.models.utils.WindowUtils;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -96,18 +99,27 @@ public class EventFilterController {
         eventManager.deleteEvents(new HashSet<>(data));
         data.clear();
         List<DateCell> cells = cc.getDateCells();
-        for (DateCell c : cells) {
-            Event.fireEvent(c, new EventsChangedEvent(EventsChangedEvent.DELETED));
-        }
+        EventsChangedEvent event =
+                new EventsChangedEvent(EventsChangedEvent.DELETED);
+        cells.forEach(o -> o.fireEvent(event));
     }
 
     @FXML
     public void saveToXML() {
-        String path = "src/main/resources/data/cal.xml";
-        try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
-            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
-            xml.write(set);
-        }
+        File file = WindowUtils.createPathPicker();
+        String path = file.getPath();
+        XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path);
+        Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+        xml.write(set);
+    }
+
+    @FXML
+    public void saveToICS() {
+        File file = WindowUtils.createPathPicker();
+        String path = file.getPath();
+        ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path);
+        Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+        ics.write(set);
     }
 
     private void updateEventTable() {

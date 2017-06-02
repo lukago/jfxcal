@@ -13,7 +13,8 @@
             <Menu mnemonicParsing="true" text="File">
                 <MenuItem mnemonicParsing="false"
                           onAction="#loadFromXML" text="Import XML events"/>
-                <MenuItem mnemonicParsing="false" text="Todo"/>
+                <MenuItem mnemonicParsing="false"
+                          onAction="#loadFromICS" text="Import ICS events"/>
             </Menu>
             <Menu mnemonicParsing="true" text="_Edit">
                 <MenuItem fx:id="eventFilterMenu" mnemonicParsing="false"

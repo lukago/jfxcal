@@ -1,15 +1,5 @@
 2. ustawianie przypomnien/alarmów dzwiekowych na wybrany czas przed zdarzeniem,
-todo: lib? 
-
-4. konwersje zdarzen do wybranego formatu standardowego (np. Outlook, Evolution). 
-event manager 
-
-5. kasowanie zdarzen starszych niz (wybrana data), filtrowanie zdarzen,
-todo EDIT -> event manager
-
-6. zapis i odczyt zdarzen /spotkan do /z bazy danych i do/z formatu XML
-do bazy automat przy otwarciu i zamknieciu programu
-xml opcjonalnie auto w settings i event manager poszczeglone?
+todo: controlsFX
 
 7. wyswietlanie okienka dialogowego typu „Ustawienia”
 file -> ustawienia -> auto save xml
@@ -23,3 +13,10 @@ Help - > About
 OK
 1. zapisywanie terminów zdarzen, krótkich ich opisów i miejsc 
 OK
+5. kasowanie zdarzen starszych niz (wybrana data), filtrowanie zdarzen,
+OK
+6. zapis i odczyt zdarzen /spotkan do /z bazy danych i do/z formatu XML
+do bazy automat przy otwarciu i zamknieciu programu
+OK
+4. konwersje zdarzen do wybranego formatu standardowego (np. Outlook, Evolution). 
+OK + odczyt

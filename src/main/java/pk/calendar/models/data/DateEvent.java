@@ -1,12 +1,14 @@
-package pk.calendar.models;
+package pk.calendar.models.data;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import pk.calendar.models.adapters.LocalDateTimeAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +19,7 @@ import java.time.LocalTime;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class DateEvent implements Comparable<DateEvent> {
+public class DateEvent implements Comparable<DateEvent>, Serializable {
 
     private String description;
     private String place;
@@ -46,6 +48,10 @@ public class DateEvent implements Comparable<DateEvent> {
         this.place = place;
     }
 
+    /**
+     * For XML serialization.
+     */
+    @Deprecated
     public DateEvent() {
         this(LocalDate.now(), 1, 1, 1, "", "");
     }
@@ -111,5 +117,15 @@ public class DateEvent implements Comparable<DateEvent> {
                 .append(description)
                 .append(place)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("description", description)
+                .append("place", place)
+                .append("dateTime", dateTime)
+                .append("notifyTime", notifyTime)
+                .toString();
     }
 }

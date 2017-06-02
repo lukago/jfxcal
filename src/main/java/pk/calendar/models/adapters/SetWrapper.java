@@ -1,6 +1,6 @@
 package pk.calendar.models.adapters;
 
-import pk.calendar.models.DateEvent;
+import pk.calendar.models.data.DateEvent;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

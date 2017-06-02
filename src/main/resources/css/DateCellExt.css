@@ -8,13 +8,8 @@
     -fx-text-fill: white;
 }
 
-#date-cell-entered {
-    -fx-background-color: darkgreen;
-    -fx-text-fill: white;
-}
-
 #date-cell-event {
-    -fx-background-color: indianred;
+    -fx-background-color: lightcoral;
     -fx-text-fill: white;
 }
 

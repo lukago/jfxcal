@@ -12,4 +12,8 @@ public class DateEventDaoFactory {
     public static XMLDateEventDao getXMLDao(String path) {
         return new XMLDateEventDao(path);
     }
+
+    public static ICSDateEventDao getICSDao(String path) {
+        return new ICSDateEventDao(path);
+    }
 }

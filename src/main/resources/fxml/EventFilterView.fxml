@@ -68,8 +68,10 @@
                 text="Save to XML"
                 GridPane.halignment="CENTER" GridPane.rowIndex="2"
                 GridPane.valignment="CENTER"/>
-        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="120.0"
-                text="Export" GridPane.halignment="RIGHT"
+        <Button onAction="#saveToICS" mnemonicParsing="false"
+                prefHeight="40.0"
+                prefWidth="120.0"
+                text="Save to ICS" GridPane.halignment="RIGHT"
                 GridPane.rowIndex="2" GridPane.valignment="CENTER">
             <GridPane.margin>
                 <Insets right="70.0"/>

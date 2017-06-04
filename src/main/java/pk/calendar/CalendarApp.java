@@ -8,12 +8,21 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import pk.calendar.controllers.CallendarController;
 
+/**
+ * Calendar apllication using JavaFX.
+ *
+ * @author Lukasz Golebiewski 203882 github.com/glbwsk
+ * @author Jakub Mielczarek 203943
+ */
 public class CalendarApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(

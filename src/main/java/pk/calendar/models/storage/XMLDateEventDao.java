@@ -15,16 +15,26 @@ import java.util.Set;
 
 /**
  * Created on 5/30/2017.
+ *
  */
-public class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
+class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private final String filename;
     private BufferedWriter bufferedWriter;
 
+    /**
+     * Ctor.
+     * @param filename path to file to read/write
+     */
     public XMLDateEventDao(String filename) {
         this.filename = filename;
     }
 
+    /**
+     * reads DateEvents form XML file.
+     * @return read DateEvents
+     * @throws JAXBException if error during unmarschalling
+     */
     @Override
     public Set<DateEvent> read() throws JAXBException {
         File file = new File(filename);
@@ -35,6 +45,12 @@ public class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
         return wrapper.getSetCol();
     }
 
+    /**
+     * Writes DateEvents to XML file.
+     * @param in DateEvents to write
+     * @throws JAXBException if error during JAXB marshalling
+     * @throws IOException if cannot access file
+     */
     @Override
     public void write(Set<DateEvent> in) throws JAXBException, IOException {
         SetWrapper wrapper = new SetWrapper();

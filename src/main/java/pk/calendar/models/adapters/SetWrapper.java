@@ -10,6 +10,7 @@ import java.util.Set;
 
 /**
  * Created on 6/1/2017.
+ * Wrapper for Set of DateEvents used for XML JAXB marshalling.
  */
 @XmlRootElement(name = "set")
 @XmlAccessorType(XmlAccessType.FIELD)

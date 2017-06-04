@@ -19,13 +19,12 @@ import javafx.stage.Stage;
 import net.fortuna.ical4j.data.ParserException;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
-import pk.calendar.models.storage.DBDateEventDao;
+import pk.calendar.models.data.EventsChangedEvent;
+import pk.calendar.models.storage.Dao;
+import pk.calendar.models.storage.DaoDB;
 import pk.calendar.models.storage.DateEventDaoFactory;
-import pk.calendar.models.storage.ICSDateEventDao;
-import pk.calendar.models.storage.XMLDateEventDao;
-import pk.calendar.utils.EventsChangedEvent;
-import pk.calendar.utils.WindowUtils;
 import pk.calendar.views.DatePickerExt;
+import pk.calendar.views.WindowUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -39,18 +38,25 @@ import java.util.stream.Collectors;
 
 /**
  * Created on 5/21/2017.
- * Controller for MainView.fxml.
- * It also creates DatePickerExt and uses its skin
- * which is not included in fxml file.
+ * Controller for MainView.fxml. It also creates DatePickerExt and uses
+ * its skin which is not included in fxml file.
  */
 public class CallendarController {
 
     private final EventManager eventManager;
     private final NotifyPopupController notifyController;
+
+    /**
+     * View component for DatePickerSkin
+     */
+    private DatePicker dp;
+    /**
+     * View component not included in fxml
+     */
+    private DatePickerSkin dps;
+
     @FXML
     private BorderPane root;
-    private DatePicker dp;
-    private DatePickerSkin dps;
 
     /**
      * Ctor. Loads data from db and initalizes popup controller.
@@ -58,7 +64,7 @@ public class CallendarController {
     public CallendarController() {
         eventManager = EventManager.getInstance();
 
-        try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
+        try (Dao<Set<DateEvent>> db = DateEventDaoFactory.getDBDao()) {
             eventManager.initEvents(db.read());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,6 +78,7 @@ public class CallendarController {
 
     /**
      * Initializes fxml view.
+     * Creates DatePickerExt and puts its skin to root.
      */
     @FXML
     public void initialize() {
@@ -197,12 +204,12 @@ public class CallendarController {
      */
     private void handleSaveEventsToDB() {
         // cancel all TimerTasks
-        notifyController.cancelAll();
+        notifyController.close();
 
         // ask user to save events to db
         Alert alert = WindowUtils.createAlert("Save changes to database?");
         if (alert.getResult() == ButtonType.YES) {
-            try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
+            try (DaoDB<Set<DateEvent>> db = DateEventDaoFactory.getDBDao()) {
                 db.delete(eventManager.getEventsDeleted());
                 db.write(eventManager.getEventsAdded());
             } catch (Exception e) {
@@ -220,14 +227,16 @@ public class CallendarController {
 
         if (file != null) {
             String path = file.getPath();
-            try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
+            try (Dao<Set<DateEvent>> xml = DateEventDaoFactory.getXMLDao(path)) {
                 Set<DateEvent> xmlnew = xml.read();
-                eventManager.addAllEvents(xmlnew);
+                eventManager.addEvents(xmlnew);
 
                 EventsChangedEvent event =
                         new EventsChangedEvent(EventsChangedEvent.ADDED);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | JAXBException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -242,14 +251,16 @@ public class CallendarController {
 
         if (file != null) {
             String path = file.getPath();
-            try (ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path)) {
+            try (Dao<Set<DateEvent>> ics = DateEventDaoFactory.getICSDao(path)) {
                 EventsChangedEvent event =
                         new EventsChangedEvent(EventsChangedEvent.ADDED);
                 Set<DateEvent> icsnew = ics.read();
 
-                eventManager.addAllEvents(icsnew);
+                eventManager.addEvents(icsnew);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | ParserException | ParseException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

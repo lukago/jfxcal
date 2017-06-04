@@ -7,8 +7,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.controlsfx.control.Notifications;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
-import pk.calendar.utils.NotifyPopup;
+import pk.calendar.models.data.TimerScheduler;
 
+import java.io.Closeable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -19,27 +20,47 @@ import java.util.TimerTask;
 
 /**
  * Created on 6/3/2017.
+ * Controller for TimerScheduler. It uses this model to
+ * create popup view at notificationTime taken from dateEvents.
  */
-public class NotifyPopupController {
+public class NotifyPopupController implements Closeable {
 
-    private final NotifyPopup notifyPopup;
-    private final Set<PopupTask> popupTasks;
     private final EventManager eventManager;
 
+    /**
+     * TimerScheduler model. It creates timer thread and shoud call
+     * cancelAll after it is no longer used to stop this thread.
+     */
+    private final TimerScheduler timerScheduler;
+
+    /**
+     * Scheduled TimerTasks
+     */
+    private final Set<PopupTask> popupTasks;
+
+    /**
+     * Ctor. Initializes fields.
+     */
     public NotifyPopupController() {
         popupTasks = new HashSet<>();
-        notifyPopup = new NotifyPopup();
+        timerScheduler = new TimerScheduler();
         eventManager = EventManager.getInstance();
     }
 
+    /**
+     * Schedules all PopupTask tasks from DateEvents.
+     */
     public void initialize() {
         for (DateEvent dateEvent : eventManager.getEvents()) {
             PopupTask task = new PopupTask(dateEvent);
-            notifyPopup.schedule(task, task.date);
+            timerScheduler.schedule(task, task.date);
             popupTasks.add(task);
         }
     }
 
+    /**
+     * Safe delete PopupTasks of deleted DateEvents.
+     */
     public void handleEventsDeleted() {
         Set<PopupTask> toRemove = new HashSet<>();
 
@@ -52,26 +73,49 @@ public class NotifyPopupController {
             }
         }
 
-        toRemove.forEach(o -> popupTasks.remove(o));
+        toRemove.forEach(popupTasks::remove);
     }
 
+    /**
+     * Safe add PopupTasks of added DateEvents in certain Date.
+     */
     public void handleEventsAdded(LocalDate item) {
         for (DateEvent dateEvent : eventManager.getEventsByDate(item)) {
             PopupTask task = new PopupTask(dateEvent);
             if (popupTasks.add(task)) {
-                notifyPopup.schedule(task, task.date);
+                timerScheduler.schedule(task, task.date);
             }
         }
     }
 
-    public void cancelAll() {
-        notifyPopup.cancel();
+    /**
+     * Cancels Timer used by TimerScheduler so it also cancels all PopupTasks.
+     * This should be called before exit of fxml application
+     * beacuse Timer is running on separate thread.
+     */
+    @Override
+    public void close() {
+        timerScheduler.close();
     }
 
+    /**
+     * Inner class. PopupTask wtih DateEvent proprety.
+     * On run cerates controlsFX popup.
+     */
     private class PopupTask extends TimerTask {
+        /**
+         * DateEvent to notify about.
+         */
         final DateEvent dateEvent;
+        /**
+         * Date type used by Timer.
+         */
         Date date;
 
+        /**
+         * Initializes fileds. Perses LocalDateTime from Date Event to Date.
+         * @param dateEvent DateEvent to notify about.
+         */
         public PopupTask(DateEvent dateEvent) {
             this.dateEvent = dateEvent;
             try {
@@ -87,6 +131,9 @@ public class NotifyPopupController {
             }
         }
 
+        /**
+         * Creates controlsFX popup on JavaFX UI thread.
+         */
         @Override
         public void run() {
             Platform.runLater(() -> Notifications.create()

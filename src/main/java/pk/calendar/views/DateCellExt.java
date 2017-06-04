@@ -18,12 +18,18 @@ class DateCellExt extends DateCell {
         initalize();
     }
 
+    /**
+     * Sets view preferences
+     */
     private void initalize() {
         setPrefHeight(200);
         getStylesheets().add(getClass()
                 .getResource("/css/DateCellExt.css").toExternalForm());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateItem(LocalDate item, boolean empty) {
         super.updateItem(item, empty);

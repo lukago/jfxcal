@@ -25,18 +25,29 @@ import java.util.Set;
 /**
  * Created on 6/2/2017.
  */
-public class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
+class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private final String filepath;
     private final SimpleDateFormat dateFormatter;
     private FileInputStream fileInputStream;
     private FileWriter fileWriter;
 
+    /**
+     * Ctor.
+     * @param filepath path to file to save/read.
+     */
     public ICSDateEventDao(String filepath) {
         this.filepath = filepath;
         dateFormatter = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
     }
 
+    /**
+     * Reads DateEvents form ICS file.
+     * @return Set of read DateEvents.
+     * @throws IOException if file cannot be accessed
+     * @throws ParseException if dateFormatter cant parse date
+     * @throws ParserException if file content is not matching ICS
+     */
     @Override
     public Set<DateEvent> read() throws IOException, ParseException, ParserException {
         Set<DateEvent> readSet = new HashSet<>();
@@ -57,11 +68,11 @@ public class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
                             ZoneId.systemDefault());
                 }
 
-                if (p.getName().equals("SUMMARY")) {
+                else if (p.getName().equals("SUMMARY")) {
                     desc = p.getValue();
                 }
 
-                if (p.getName().equals("LOCATION")) {
+                else if (p.getName().equals("LOCATION")) {
                     place = p.getValue();
                 }
             }
@@ -80,6 +91,12 @@ public class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
         return readSet;
     }
 
+    /**
+     * Writes DateEvents as ICS calendar.
+     * @param in DateEvents to write.
+     * @throws IOException if cannot access file
+     * @throws ParseException if dateFormatter parse error
+     */
     @Override
     public void write(Set<DateEvent> in) throws IOException, ParseException {
 

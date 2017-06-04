@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 /**
  * Created on 6/1/2017.
+ * XML adapter for marshalling LocalDateTime.
  */
 public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
     @Override

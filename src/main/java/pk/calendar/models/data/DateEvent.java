@@ -15,9 +15,8 @@ import java.time.LocalTime;
 
 /**
  * Created on 5/21/2017.
+ * Callendar event at certain date data model.
  */
-
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DateEvent implements Comparable<DateEvent>, Serializable {
 
@@ -29,17 +28,33 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
     @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     private LocalDateTime notifyTime;
 
-    public DateEvent(LocalDate date, int hh, int mm, int secMinus, String place,
+    /**
+     * Ctor.
+     * @param date Date of event
+     * @param hour hour time of event
+     * @param minute minute time of event
+     * @param secMinus how many seconds before set notify time
+     * @param place place description
+     * @param description event description
+     */
+    public DateEvent(LocalDate date, int hour, int minute, int secMinus, String place,
                      String description) {
-        String hour = (hh < 10 ? "0" : "") + hh;
-        String minute = (mm < 10 ? "0" : "") + mm;
-        LocalTime time = LocalTime.parse(hour + ":" + minute + ":00");
+        String hh = (hour < 10 ? "0" : "") + hour;
+        String mm = (minute < 10 ? "0" : "") + minute;
+        LocalTime time = LocalTime.parse(hh + ":" + mm + ":00");
         setDateTime(LocalDateTime.of(date, time));
         setNotifyTime(secMinus);
         setDescription(description);
         setPlace(place);
     }
 
+    /**
+     * Standard all field ctor.
+     * @param dateTime when event
+     * @param notifyTime when notify
+     * @param description description of event
+     * @param place place description
+     */
     public DateEvent(LocalDateTime dateTime, LocalDateTime notifyTime,
                      String description, String place) {
         this.dateTime = dateTime;
@@ -53,6 +68,7 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
      */
     @Deprecated
     public DateEvent() {
+        this(LocalDate.now(), 0, 0, 0, "", "");
     }
 
     public LocalDateTime getNotifyTime() {

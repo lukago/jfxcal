@@ -1,4 +1,4 @@
-package pk.calendar.utils;
+package pk.calendar.views;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -11,12 +11,17 @@ import java.io.File;
 
 /**
  * Created on 6/2/2017.
+ * Utility static class.
  */
 public final class WindowUtils {
 
     private WindowUtils() {
     }
 
+    /**
+     * Ceates path picker window.
+     * @return picked path bu user
+     */
     public static File createPathPicker() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("src/main/resources/data/"));
@@ -24,6 +29,11 @@ public final class WindowUtils {
         return fileChooser.showOpenDialog(new Stage());
     }
 
+    /**
+     * Creates Alert window.
+     * @param msg message of alert
+     * @return created Alert
+     */
     public static Alert createAlert(String msg) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 msg, ButtonType.YES, ButtonType.NO);

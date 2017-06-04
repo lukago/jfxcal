@@ -14,11 +14,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
+import pk.calendar.models.data.EventsChangedEvent;
+import pk.calendar.models.storage.Dao;
 import pk.calendar.models.storage.DateEventDaoFactory;
-import pk.calendar.models.storage.ICSDateEventDao;
-import pk.calendar.models.storage.XMLDateEventDao;
-import pk.calendar.utils.EventsChangedEvent;
-import pk.calendar.utils.WindowUtils;
+import pk.calendar.views.WindowUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -34,8 +33,10 @@ import java.util.Set;
  * Created on 5/27/2017.
  */
 public class EventFilterController {
+
     private final EventManager eventManager;
     private final CallendarController cc;
+
     @FXML
     private DatePicker datePickerStart;
     @FXML
@@ -48,15 +49,34 @@ public class EventFilterController {
     private TableColumn<DateEvent, String> descColumn;
     @FXML
     private TableColumn<DateEvent, String> placeColumn;
+
+    /**
+     * date start picked by user
+     */
     private LocalDate start;
+    /**
+     * date end picked by user
+     */
     private LocalDate end;
+    /**
+     * observable data for table view
+     */
     private ObservableList<DateEvent> data;
 
+    /**
+     * Ctor. This class has no zero argument ctor so it has to be set by
+     * setControllerFactory with fxml loader when creating this window.
+     *
+     * @param cc this class uses and notifies main controller
+     */
     public EventFilterController(CallendarController cc) {
         eventManager = EventManager.getInstance();
         this.cc = cc;
     }
 
+    /**
+     * Initializes datePickers and tableView factories and properties.
+     */
     @FXML
     public void initialize() {
         datePickerStart.setValue(LocalDate.now());
@@ -82,6 +102,12 @@ public class EventFilterController {
         eventTable.setItems(data);
     }
 
+    /**
+     * Handles deleting events with TableView by DEL key. It notifies all
+     * date cells about this forcing them to update.
+     *
+     * @param e pressed key
+     */
     private void handleDelete(KeyEvent e) {
         if (e.getCode().equals(KeyCode.DELETE)
                 && eventTable.getSelectionModel() != null) {
@@ -96,6 +122,10 @@ public class EventFilterController {
         }
     }
 
+    /**
+     * Handler for delete button. It deletes all events that are in filter.
+     * It notifies all date cells about this forcing them to update.
+     */
     @FXML
     public void deleteEvents() {
         eventManager.deleteEvents(new HashSet<>(data));
@@ -106,30 +136,46 @@ public class EventFilterController {
         cells.forEach(o -> o.fireEvent(event));
     }
 
+    /**
+     * Handler for save to XML button. It saves filtered events to
+     * xml file.
+     */
     @FXML
     public void saveToXML() {
         File file = WindowUtils.createPathPicker();
         String path = file.getPath();
-        try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
+        try (Dao<Set<DateEvent>> xml = DateEventDaoFactory.getXMLDao(path)) {
             Set<DateEvent> set = eventManager.getEventsBetween(start, end);
             xml.write(set);
         } catch (IOException | JAXBException e) {
             e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void saveToICS() {
-        File file = WindowUtils.createPathPicker();
-        String path = file.getPath();
-        try (ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path)) {
-            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
-            ics.write(set);
-        } catch (IOException | ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Handler for save to ICS button. It saves filtered events to
+     * ICS file.
+     */
+    @FXML
+    public void saveToICS() {
+        File file = WindowUtils.createPathPicker();
+        String path = file.getPath();
+        try (Dao<Set<DateEvent>> ics = DateEventDaoFactory.getICSDao(path)) {
+            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+            ics.write(set);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handler for DatePickers actions. Updates tableView and date
+     * properties.
+     */
     private void updateEventTable() {
         start = datePickerStart.getValue();
         end = datePickerEnd.getValue();

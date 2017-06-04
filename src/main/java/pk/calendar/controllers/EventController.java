@@ -11,7 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
-import pk.calendar.utils.EventsChangedEvent;
+import pk.calendar.models.data.EventsChangedEvent;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,13 +19,20 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Created on 5/21/2017.
- * Controller for EventView.fxml.
+ * Controller for EventView.fxml. This window is created after click on datcell.
  */
 public class EventController {
 
-    private final SimpleStringProperty eventDateStr;
     private final EventManager eventManager;
     private final DateCell dc;
+
+    /**
+     * String property binded to dateLabel. DateLabel cannot be initialized
+     * in ctor so it has to use this property to be initialized properly with
+     * dateCell date.
+     */
+    private final SimpleStringProperty eventDateStr;
+
     @FXML
     private Label dateLabel;
     @FXML
@@ -50,7 +57,8 @@ public class EventController {
     private LocalDate eventDate;
 
     /**
-     * Ctor. Initializes fields.
+     * Ctor. This class has no zero argument ctor so it has to be set by
+     * setControllerFactory with fxml loader when creating this window.
      *
      * @param dc DateCell which called this ctor.
      */
@@ -62,7 +70,7 @@ public class EventController {
     }
 
     /**
-     * Initializes spinners and tableView factories.
+     * Initializes spinners and tableView factories and properties.
      */
     @FXML
     public void initialize() {
@@ -99,7 +107,7 @@ public class EventController {
 
     /**
      * Handles deleting events with TableView by DEL key.
-     *
+     * It notifies dateCell about it to update it.
      * @param e pressed key
      */
     private void handleDelete(KeyEvent e) {
@@ -127,7 +135,7 @@ public class EventController {
         int secMinus = parseNotifySpinner(notifySpinner.getValue());
         DateEvent newDateEvent =
                 new DateEvent(eventDate, hour, min, secMinus, place, desc);
-        eventManager.addEvent(newDateEvent);
+        eventManager.addEvents(newDateEvent);
         data.add(newDateEvent);
         placeField.clear();
         descField.clear();

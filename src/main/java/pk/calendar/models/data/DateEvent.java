@@ -49,11 +49,10 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
     }
 
     /**
-     * For XML serialization.
+     * Ctor for XML serialization.
      */
     @Deprecated
     public DateEvent() {
-        this(LocalDate.now(), 1, 1, 1, "", "");
     }
 
     public LocalDateTime getNotifyTime() {

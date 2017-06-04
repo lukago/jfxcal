@@ -14,13 +14,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
-import pk.calendar.models.utils.EventsChangedEvent;
 import pk.calendar.models.storage.DateEventDaoFactory;
 import pk.calendar.models.storage.ICSDateEventDao;
 import pk.calendar.models.storage.XMLDateEventDao;
-import pk.calendar.models.utils.WindowUtils;
+import pk.calendar.utils.EventsChangedEvent;
+import pk.calendar.utils.WindowUtils;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -31,6 +34,8 @@ import java.util.Set;
  * Created on 5/27/2017.
  */
 public class EventFilterController {
+    private final EventManager eventManager;
+    private final CallendarController cc;
     @FXML
     private DatePicker datePickerStart;
     @FXML
@@ -43,12 +48,9 @@ public class EventFilterController {
     private TableColumn<DateEvent, String> descColumn;
     @FXML
     private TableColumn<DateEvent, String> placeColumn;
-
     private LocalDate start;
     private LocalDate end;
-    private EventManager eventManager;
     private ObservableList<DateEvent> data;
-    private CallendarController cc;
 
     public EventFilterController(CallendarController cc) {
         eventManager = EventManager.getInstance();
@@ -76,7 +78,7 @@ public class EventFilterController {
         placeColumn.setCellValueFactory(
                 new PropertyValueFactory<>("place"));
 
-        eventTable.setOnKeyPressed(e -> handleDelete(e));
+        eventTable.setOnKeyPressed(this::handleDelete);
         eventTable.setItems(data);
     }
 
@@ -108,18 +110,24 @@ public class EventFilterController {
     public void saveToXML() {
         File file = WindowUtils.createPathPicker();
         String path = file.getPath();
-        XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path);
-        Set<DateEvent> set = eventManager.getEventsBetween(start, end);
-        xml.write(set);
+        try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
+            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+            xml.write(set);
+        } catch (IOException | JAXBException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     public void saveToICS() {
         File file = WindowUtils.createPathPicker();
         String path = file.getPath();
-        ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path);
-        Set<DateEvent> set = eventManager.getEventsBetween(start, end);
-        ics.write(set);
+        try (ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path)) {
+            Set<DateEvent> set = eventManager.getEventsBetween(start, end);
+            ics.write(set);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateEventTable() {

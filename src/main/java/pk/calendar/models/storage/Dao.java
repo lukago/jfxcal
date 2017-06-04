@@ -3,8 +3,8 @@ package pk.calendar.models.storage;
 /**
  * Created on 5/25/2017.
  */
-public interface Dao<T> {
-    T read();
+interface Dao<T> {
+    T read() throws Exception;
 
-    void write(T in);
+    void write(T in) throws Exception;
 }

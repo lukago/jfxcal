@@ -1,4 +1,4 @@
-package pk.calendar.models.utils;
+package pk.calendar.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -14,14 +14,14 @@ import java.io.File;
  */
 public final class WindowUtils {
 
-    private WindowUtils() { }
+    private WindowUtils() {
+    }
 
     public static File createPathPicker() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("src/main/resources/data/"));
-        File file = fileChooser.showOpenDialog(new Stage());
 
-        return file;
+        return fileChooser.showOpenDialog(new Stage());
     }
 
     public static Alert createAlert(String msg) {
@@ -36,4 +36,5 @@ public final class WindowUtils {
         alert.showAndWait();
         return alert;
     }
+
 }

@@ -22,8 +22,6 @@ class DateCellExt extends DateCell {
         setPrefHeight(200);
         getStylesheets().add(getClass()
                 .getResource("/css/DateCellExt.css").toExternalForm());
-        setOnMouseClicked(e -> cc.handleCellEvent(this, e));
-        setOnKeyPressed(e -> cc.handleCellEvent(this, e));
     }
 
     @Override

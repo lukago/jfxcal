@@ -5,7 +5,7 @@ package pk.calendar.models.storage;
  */
 public class DateEventDaoFactory {
 
-    public static DBDateEventDao getDBDao() {
+    public static DBDateEventDao getDBDao() throws Exception {
         return new DBDateEventDao(new SQLDateEventListParser("date_events"));
     }
 

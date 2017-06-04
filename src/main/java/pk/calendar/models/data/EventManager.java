@@ -1,8 +1,5 @@
 package pk.calendar.models.data;
 
-import pk.calendar.models.storage.DBDateEventDao;
-import pk.calendar.models.storage.DateEventDaoFactory;
-
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,31 +10,19 @@ import java.util.stream.Collectors;
  */
 public class EventManager {
 
-    private Set<DateEvent> events;
-
     private final static EventManager instance = new EventManager();
-
-
-    private Set<DateEvent> eventsAdded;
-    private Set<DateEvent> eventsDeleted;
+    private final Set<DateEvent> events;
+    private final Set<DateEvent> eventsAdded;
+    private final Set<DateEvent> eventsDeleted;
 
     private EventManager() {
-        this.events = getEventsFromDb();
+        events = new HashSet<>();
         eventsAdded = new HashSet<>();
         eventsDeleted = new HashSet<>();
     }
 
     public static EventManager getInstance() {
         return instance;
-    }
-
-    private Set<DateEvent> getEventsFromDb() {
-        try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
-            return db.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public Set<DateEvent> getEventsByDate(LocalDate date) {
@@ -79,6 +64,10 @@ public class EventManager {
             events.add(e);
             eventsAdded.add(e);
         }
+    }
+
+    public void initEvents(Set<DateEvent> eventsToAdd) {
+        events.addAll(eventsToAdd);
     }
 
     public Set<DateEvent> getEvents() {

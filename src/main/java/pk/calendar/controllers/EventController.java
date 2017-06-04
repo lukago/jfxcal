@@ -11,16 +11,21 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
-import pk.calendar.models.utils.EventsChangedEvent;
+import pk.calendar.utils.EventsChangedEvent;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
  * Created on 5/21/2017.
+ * Controller for EventView.fxml.
  */
 public class EventController {
 
+    private final SimpleStringProperty eventDateStr;
+    private final EventManager eventManager;
+    private final DateCell dc;
     @FXML
     private Label dateLabel;
     @FXML
@@ -41,13 +46,14 @@ public class EventController {
     private Spinner<Integer> minSpinner;
     @FXML
     private Spinner<String> notifySpinner;
-
     private ObservableList<DateEvent> data;
-    private SimpleStringProperty eventDateStr;
     private LocalDate eventDate;
-    private EventManager eventManager;
-    private DateCell dc;
 
+    /**
+     * Ctor. Initializes fields.
+     *
+     * @param dc DateCell which called this ctor.
+     */
     public EventController(DateCell dc) {
         eventDateStr = new SimpleStringProperty();
         eventManager = EventManager.getInstance();
@@ -55,16 +61,23 @@ public class EventController {
         this.dc = dc;
     }
 
+    /**
+     * Initializes spinners and tableView factories.
+     */
     @FXML
     public void initialize() {
+        int currHour = LocalDateTime.now().getHour();
+        int currMin = LocalDateTime.now().getMinute();
+
         ObservableList<String> notify =
                 FXCollections.observableArrayList("Never", "10 sec");
         notifySpinner.setValueFactory(
                 new SpinnerValueFactory.ListSpinnerValueFactory<>(notify));
         hourSpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, currHour));
         minSpinner.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 55, 0, 5));
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, currMin, 1));
+
 
         descField.setWrapText(true);
         dateLabel.textProperty().bind(eventDateStr);
@@ -81,9 +94,14 @@ public class EventController {
                 new PropertyValueFactory<>("place"));
 
         eventTable.setItems(data);
-        eventTable.setOnKeyPressed(e -> handleDelete(e));
+        eventTable.setOnKeyPressed(this::handleDelete);
     }
 
+    /**
+     * Handles deleting events with TableView by DEL key.
+     *
+     * @param e pressed key
+     */
     private void handleDelete(KeyEvent e) {
 
         if (e.getCode().equals(KeyCode.DELETE)) {
@@ -97,6 +115,9 @@ public class EventController {
         }
     }
 
+    /**
+     * Handles "Add event" button.
+     */
     @FXML
     public void addEvent() {
         String desc = descField.getText();
@@ -114,11 +135,20 @@ public class EventController {
         Event.fireEvent(dc, new EventsChangedEvent(EventsChangedEvent.ADDED));
     }
 
+    /**
+     * Sets event date and its string representation property used by view.
+     */
     public void setEventDate(LocalDate eventDate) {
         this.eventDate = eventDate;
         eventDateStr.setValue(eventDate.toString());
     }
 
+    /**
+     * Parses spinner value to seconds
+     *
+     * @param value string value of spinner
+     * @return int number of seconds
+     */
     private int parseNotifySpinner(String value) {
         if (value.equals("10 sec")) {
             return 10;

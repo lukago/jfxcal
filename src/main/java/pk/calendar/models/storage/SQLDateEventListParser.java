@@ -10,7 +10,7 @@ import java.util.Set;
  */
 class SQLDateEventListParser implements SQLParser<Set<DateEvent>> {
 
-    private String eventTable;
+    private final String eventTable;
 
     public SQLDateEventListParser(String eventTable) {
         this.eventTable = eventTable;
@@ -18,36 +18,40 @@ class SQLDateEventListParser implements SQLParser<Set<DateEvent>> {
 
     @Override
     public String createInsertQuery(Set<DateEvent> in) {
-        String query = "";
+        StringBuilder query = new StringBuilder();
         Timestamp tsDateTime;
         Timestamp tsNotify;
 
         for (DateEvent e : in) {
-            query += "\nINSERT INTO " + eventTable + " VALUES ";
+            query.append("\nINSERT INTO ").append(eventTable).append(" VALUES ");
             tsDateTime = Timestamp.valueOf(e.getDateTime());
             tsNotify = Timestamp.valueOf(e.getNotifyTime());
-            query += "('" + tsDateTime + "', '" + tsNotify + "', '"
-                    + e.getDescription() + "', '" + e.getPlace() + "')";
+            query.append("('").append(tsDateTime)
+                    .append("', '").append(tsNotify)
+                    .append("', '").append(e.getDescription())
+                    .append("', '").append(e.getPlace()).append("')");
 
         }
-        return query;
+        return query.toString();
     }
 
     @Override
     public String createDeleteQuery(Set<DateEvent> in) {
-        String query = "";
+        StringBuilder query = new StringBuilder();
         Timestamp tsDateTime;
         Timestamp tsNotify;
 
         for (DateEvent e : in) {
-            query += "\nDELETE FROM " + eventTable + " WHERE ";
+            query.append("\nDELETE FROM ").append(eventTable).append(" WHERE ");
             tsDateTime = Timestamp.valueOf(e.getDateTime());
             tsNotify = Timestamp.valueOf(e.getNotifyTime());
-            query += "date_time = '" + tsDateTime + "' AND notify_time = '"
-                    + tsNotify + "' AND description = '" + e.getDescription()
-                    + "' AND place = '" + e.getPlace() + "'";
+            query.append("date_time = '").append(tsDateTime)
+                    .append("' AND notify_time = '")
+                    .append(tsNotify).append("' AND description = '")
+                    .append(e.getDescription()).append("' AND place = '")
+                    .append(e.getPlace()).append("'");
         }
-        return query;
+        return query.toString();
     }
 
     @Override

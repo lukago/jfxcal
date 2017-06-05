@@ -56,6 +56,14 @@
             <version>4.12</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.tinylog/tinylog -->
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+
 
     </dependencies>
 

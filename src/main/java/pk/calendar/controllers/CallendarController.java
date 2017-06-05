@@ -17,11 +17,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import net.fortuna.ical4j.data.ParserException;
+import org.pmw.tinylog.Logger;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
 import pk.calendar.models.data.EventsChangedEvent;
 import pk.calendar.models.data.Settings;
-import pk.calendar.models.storage.*;
+import pk.calendar.models.storage.DBDateEventDao;
+import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.storage.ICSDateEventDao;
+import pk.calendar.models.storage.XMLDateEventDao;
 import pk.calendar.views.DatePickerExt;
 import pk.calendar.views.WindowUtils;
 
@@ -65,6 +69,7 @@ public class CallendarController {
         } catch (SQLException e) {
             WindowUtils.createErrorAlert("Could not connect to databse!");
             eventManager.initEvents(new HashSet<>());
+            Logger.trace(e);
         }
 
         notifyController = new NotifyPopupController();
@@ -210,6 +215,7 @@ public class CallendarController {
             } catch (SQLException e) {
                 String msg = "Could not connect to databse!. No changes saved.";
                 WindowUtils.createErrorAlert(msg);
+                Logger.trace(e);
             }
         }
     }
@@ -231,13 +237,14 @@ public class CallendarController {
                         new EventsChangedEvent(EventsChangedEvent.ADDED);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | JAXBException e) {
-                e.printStackTrace();
+                WindowUtils.createErrorAlert("Could not load file!");
+                Logger.trace(e);
             }
         }
     }
 
     /**
-     * Handler for load from xml submenu.
+     * Handler for load from ics submenu.
      */
     @FXML
     void loadFromICS() {
@@ -253,7 +260,8 @@ public class CallendarController {
                 eventManager.addEvents(icsnew);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | ParserException | ParseException e) {
-                e.printStackTrace();
+                WindowUtils.createErrorAlert("Could not load file!");
+                Logger.trace(e);
             }
         }
     }

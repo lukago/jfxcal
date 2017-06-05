@@ -11,17 +11,15 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu text="File">
-                <MenuItem mnemonicParsing="false"
-                          onAction="#loadFromXML" text="Import XML events"/>
-                <MenuItem mnemonicParsing="false"
-                          onAction="#loadFromICS" text="Import ICS events"/>
+                <MenuItem onAction="#loadFromXML" text="Import XML events"/>
+                <MenuItem onAction="#loadFromICS" text="Import ICS events"/>
+                <MenuItem onAction="#createSettingsWindow" text="Settings"/>
             </Menu>
             <Menu text="_Edit">
-                <MenuItem mnemonicParsing="false"
-                          onAction="#createEventFilter" text="Event filter"/>
+                <MenuItem onAction="#createEventFilter" text="Event filter"/>
             </Menu>
-            <Menu mnemonicParsing="false" text="_Help">
-                <MenuItem mnemonicParsing="false" text="About"/>
+            <Menu text="_Help">
+                <MenuItem onAction="#createAboutWindow" text="About"/>
             </Menu>
         </MenuBar>
     </top>

@@ -24,8 +24,9 @@ import java.util.Set;
 
 /**
  * Created on 6/2/2017.
+ * Dao for ICS format I/O.
  */
-class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
+public class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private final String filepath;
     private final SimpleDateFormat dateFormatter;
@@ -62,18 +63,18 @@ class ICSDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
             VEvent ev = (VEvent) cc;
 
             for (Property p : ev.getProperties()) {
-                if (p.getName().equals("DTSTART")) {
-                    dateTime = LocalDateTime.ofInstant(
-                            dateFormatter.parse(p.getValue()).toInstant(),
-                            ZoneId.systemDefault());
-                }
-
-                else if (p.getName().equals("SUMMARY")) {
-                    desc = p.getValue();
-                }
-
-                else if (p.getName().equals("LOCATION")) {
-                    place = p.getValue();
+                switch (p.getName()) {
+                    case "DTSTART":
+                        dateTime = LocalDateTime.ofInstant(
+                                dateFormatter.parse(p.getValue()).toInstant(),
+                                ZoneId.systemDefault());
+                        break;
+                    case "SUMMARY":
+                        desc = p.getValue();
+                        break;
+                    case "LOCATION":
+                        place = p.getValue();
+                        break;
                 }
             }
 

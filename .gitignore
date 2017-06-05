@@ -1,6 +1,7 @@
 ## Other
 android/assets/data/*
 plan.JPG
+prefs.bin
 
 ## Java
 *.class

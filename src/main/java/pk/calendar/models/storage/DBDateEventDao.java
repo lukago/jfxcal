@@ -15,11 +15,7 @@ import java.util.Set;
  * Created on 5/25/2017.
  * Dao for SQL Server database.
  */
-class DBDateEventDao implements DaoDB<Set<DateEvent>>, AutoCloseable {
-
-    private final String url = "jdbc:sqlserver://" + "ACER"
-            + "\\SQLEXPRESS;databaseName=pkcalendar;"
-            + "integratedSecurity=true";
+public class DBDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private Connection connection;
     private Statement statement;
@@ -31,7 +27,7 @@ class DBDateEventDao implements DaoDB<Set<DateEvent>>, AutoCloseable {
      * @param parser for creating queries
      * @throws SQLException if cannot connect to db
      */
-    public DBDateEventDao(SQLParser parser) throws SQLException {
+    public DBDateEventDao(SQLParser parser, String url) throws SQLException {
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setURL(url);
         connection = ds.getConnection();
@@ -79,7 +75,6 @@ class DBDateEventDao implements DaoDB<Set<DateEvent>>, AutoCloseable {
      * @param in set of matching elements to delete
      * @throws SQLException if error during query execuction
      */
-    @Override
     public void delete(Set<DateEvent> in) throws SQLException {
         String query = parser.createDeleteQuery(in);
         statement.executeUpdate(query);

@@ -13,6 +13,7 @@ import java.io.Closeable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -136,9 +137,13 @@ public class NotifyPopupController implements Closeable {
          */
         @Override
         public void run() {
+            String text = dateEvent.getDescription()
+                    + " - " + dateEvent.getPlace();
+            DateTimeFormatter formatter = DateTimeFormatter
+                    .ofPattern("yyyy-MM-dd HH:mm");
             Platform.runLater(() -> Notifications.create()
-                    .title(dateEvent.getDateTime().toString())
-                    .text(dateEvent.getDescription())
+                    .title(dateEvent.getDateTime().format(formatter))
+                    .text(text)
                     .hideAfter(Duration.seconds(10))
                     .showInformation());
         }

@@ -78,7 +78,7 @@ public class EventController {
         int currMin = LocalDateTime.now().getMinute();
 
         ObservableList<String> notify =
-                FXCollections.observableArrayList("Never", "10 sec");
+                FXCollections.observableArrayList("Never", "10 sec", "1 hour", "1 day");
         notifySpinner.setValueFactory(
                 new SpinnerValueFactory.ListSpinnerValueFactory<>(notify));
         hourSpinner.setValueFactory(
@@ -158,9 +158,15 @@ public class EventController {
      * @return int number of seconds
      */
     private int parseNotifySpinner(String value) {
-        if (value.equals("10 sec")) {
-            return 10;
+        switch (value) {
+            case "10 sec":
+                return 10;
+            case "1 hour":
+                return 3600;
+            case "1 day":
+                return 3600 * 24;
+            default:
+                return 0;
         }
-        return 0;
     }
 }

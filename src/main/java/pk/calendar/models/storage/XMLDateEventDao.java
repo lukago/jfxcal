@@ -17,7 +17,7 @@ import java.util.Set;
  * Created on 5/30/2017.
  *
  */
-class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
+public class XMLDateEventDao implements Dao<Set<DateEvent>>, AutoCloseable {
 
     private final String filename;
     private BufferedWriter bufferedWriter;

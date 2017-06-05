@@ -1,5 +1,7 @@
 package pk.calendar.models.storage;
 
+import pk.calendar.models.data.Settings;
+
 import java.sql.SQLException;
 
 /**
@@ -17,7 +19,9 @@ public class DateEventDaoFactory {
         String table = "date_events";
         String[] columns =
                 new String[] {"date_time", "notify_time", "description", "place"};
-        return new DBDateEventDao(new SQLParser(table, columns));
+        String url = "jdbc:sqlserver://" + Settings.getData().dataBase +
+                ";databaseName=pkcalendar;integratedSecurity=true";
+        return new DBDateEventDao(new SQLParser(table, columns), url);
     }
 
     /**

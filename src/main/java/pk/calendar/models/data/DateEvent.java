@@ -37,8 +37,8 @@ public class DateEvent implements Comparable<DateEvent>, Serializable {
      * @param place place description
      * @param description event description
      */
-    public DateEvent(LocalDate date, int hour, int minute, int secMinus, String place,
-                     String description) {
+    public DateEvent(LocalDate date, int hour, int minute, int secMinus,
+                     String place, String description) {
         String hh = (hour < 10 ? "0" : "") + hour;
         String mm = (minute < 10 ? "0" : "") + minute;
         LocalTime time = LocalTime.parse(hh + ":" + mm + ":00");

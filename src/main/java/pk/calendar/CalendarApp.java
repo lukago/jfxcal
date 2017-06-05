@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import pk.calendar.controllers.CallendarController;
+import pk.calendar.models.data.Settings;
 
 /**
  * Calendar apllication using JavaFX.
@@ -29,7 +30,8 @@ public class CalendarApp extends Application {
                 getClass().getResource("/fxml/MainView.fxml"));
         BorderPane root = loader.load();
 
-        Scene scene = new Scene(root, 1000, 600);
+        Scene scene = new Scene(root, Settings.getData().winWidth,
+                Settings.getData().winHeigth);
 
         stage.setScene(scene);
         stage.setTitle("Calendar");

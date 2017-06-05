@@ -15,8 +15,9 @@ import javafx.scene.input.KeyEvent;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
 import pk.calendar.models.data.EventsChangedEvent;
-import pk.calendar.models.storage.Dao;
 import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.storage.ICSDateEventDao;
+import pk.calendar.models.storage.XMLDateEventDao;
 import pk.calendar.views.WindowUtils;
 
 import javax.xml.bind.JAXBException;
@@ -31,6 +32,7 @@ import java.util.Set;
 
 /**
  * Created on 5/27/2017.
+ * Controller for EventFliterView.fxml.
  */
 public class EventFilterController {
 
@@ -144,12 +146,10 @@ public class EventFilterController {
     public void saveToXML() {
         File file = WindowUtils.createPathPicker();
         String path = file.getPath();
-        try (Dao<Set<DateEvent>> xml = DateEventDaoFactory.getXMLDao(path)) {
+        try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
             Set<DateEvent> set = eventManager.getEventsBetween(start, end);
             xml.write(set);
         } catch (IOException | JAXBException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -162,12 +162,10 @@ public class EventFilterController {
     public void saveToICS() {
         File file = WindowUtils.createPathPicker();
         String path = file.getPath();
-        try (Dao<Set<DateEvent>> ics = DateEventDaoFactory.getICSDao(path)) {
+        try (ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path)) {
             Set<DateEvent> set = eventManager.getEventsBetween(start, end);
             ics.write(set);
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }

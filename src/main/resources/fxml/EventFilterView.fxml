@@ -4,6 +4,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0"
           prefWidth="900.0"
           xmlns="http://javafx.com/javafx/8.0.111"
@@ -76,4 +77,8 @@
             <Insets right="70.0"/>
         </GridPane.margin>
     </Button>
+
+    <stylesheets>
+        <URL value="@../css/EventFilter.css"/>
+    </stylesheets>
 </GridPane>

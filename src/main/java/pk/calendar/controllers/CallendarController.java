@@ -20,9 +20,8 @@ import net.fortuna.ical4j.data.ParserException;
 import pk.calendar.models.data.DateEvent;
 import pk.calendar.models.data.EventManager;
 import pk.calendar.models.data.EventsChangedEvent;
-import pk.calendar.models.storage.Dao;
-import pk.calendar.models.storage.DaoDB;
-import pk.calendar.models.storage.DateEventDaoFactory;
+import pk.calendar.models.data.Settings;
+import pk.calendar.models.storage.*;
 import pk.calendar.views.DatePickerExt;
 import pk.calendar.views.WindowUtils;
 
@@ -32,6 +31,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,10 +47,6 @@ public class CallendarController {
     private final NotifyPopupController notifyController;
 
     /**
-     * View component for DatePickerSkin
-     */
-    private DatePicker dp;
-    /**
      * View component not included in fxml
      */
     private DatePickerSkin dps;
@@ -64,12 +60,11 @@ public class CallendarController {
     public CallendarController() {
         eventManager = EventManager.getInstance();
 
-        try (Dao<Set<DateEvent>> db = DateEventDaoFactory.getDBDao()) {
+        try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
             eventManager.initEvents(db.read());
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            WindowUtils.createErrorAlert("Could not connect to databse!");
+            eventManager.initEvents(new HashSet<>());
         }
 
         notifyController = new NotifyPopupController();
@@ -82,7 +77,7 @@ public class CallendarController {
      */
     @FXML
     public void initialize() {
-        dp = new DatePickerExt(LocalDate.now(), this);
+        DatePicker dp = new DatePickerExt(LocalDate.now(), this);
         dps = new DatePickerSkin(dp);
         Node popupContent = dps.getPopupContent();
         root.setCenter(popupContent);
@@ -120,7 +115,7 @@ public class CallendarController {
     private void handleToday(DateCell dc, LocalDate item) {
         if (item.isEqual(LocalDate.now())) {
             if (!eventManager.getEventsByDate(item).isEmpty()) {
-                dc.setId("date-cell-today-event");
+                dc.setId("date-cell-today-event-"+Settings.getData().cellColor);
             } else {
                 dc.setId("date-cell-today");
             }
@@ -135,7 +130,7 @@ public class CallendarController {
      */
     private void handleEventAdded(DateCell dc, LocalDate item) {
         if (!eventManager.getEventsByDate(item).isEmpty()) {
-            dc.setId("date-cell-event");
+            dc.setId("date-cell-event-"+ Settings.getData().cellColor);
         }
 
         notifyController.handleEventsAdded(item);
@@ -207,13 +202,14 @@ public class CallendarController {
         notifyController.close();
 
         // ask user to save events to db
-        Alert alert = WindowUtils.createAlert("Save changes to database?");
+        Alert alert = WindowUtils.createAlert("Save event changes to database?");
         if (alert.getResult() == ButtonType.YES) {
-            try (DaoDB<Set<DateEvent>> db = DateEventDaoFactory.getDBDao()) {
+            try (DBDateEventDao db = DateEventDaoFactory.getDBDao()) {
                 db.delete(eventManager.getEventsDeleted());
                 db.write(eventManager.getEventsAdded());
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (SQLException e) {
+                String msg = "Could not connect to databse!. No changes saved.";
+                WindowUtils.createErrorAlert(msg);
             }
         }
     }
@@ -227,7 +223,7 @@ public class CallendarController {
 
         if (file != null) {
             String path = file.getPath();
-            try (Dao<Set<DateEvent>> xml = DateEventDaoFactory.getXMLDao(path)) {
+            try (XMLDateEventDao xml = DateEventDaoFactory.getXMLDao(path)) {
                 Set<DateEvent> xmlnew = xml.read();
                 eventManager.addEvents(xmlnew);
 
@@ -235,8 +231,6 @@ public class CallendarController {
                         new EventsChangedEvent(EventsChangedEvent.ADDED);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | JAXBException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -251,7 +245,7 @@ public class CallendarController {
 
         if (file != null) {
             String path = file.getPath();
-            try (Dao<Set<DateEvent>> ics = DateEventDaoFactory.getICSDao(path)) {
+            try (ICSDateEventDao ics = DateEventDaoFactory.getICSDao(path)) {
                 EventsChangedEvent event =
                         new EventsChangedEvent(EventsChangedEvent.ADDED);
                 Set<DateEvent> icsnew = ics.read();
@@ -259,8 +253,6 @@ public class CallendarController {
                 eventManager.addEvents(icsnew);
                 getDateCells().forEach(o -> o.fireEvent(event));
             } catch (IOException | ParserException | ParseException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -308,6 +300,34 @@ public class CallendarController {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    /**
+     * Used to create "Settings" window. Called after submenu click.
+     */
+    @FXML
+    private void createSettingsWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass()
+                    .getResource("/fxml/SettingsView.fxml"));
+            fxmlLoader.setControllerFactory(
+                    c -> new SettingsController(this));
+            GridPane root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setTitle("Settings");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.getIcons().add(new Image("/assets/calendar-icon.png"));
+            stage.show();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void createAboutWindow() {
+        WindowUtils.createAboutWindow();
     }
 
     /**
